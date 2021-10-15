@@ -6,6 +6,7 @@
       <input 
         id="email"
         type="email"
+        ref="email"
         placeholder="Wpisz swój adres email"
         :class="{ error: incorrectEmail }">
 
@@ -13,6 +14,7 @@
       <input 
         id="password"
         type="password"
+        ref="password"
         placeholder="Wpisz swoje hasło"
         :class="{ error: incorrectPassword }">
 
@@ -22,7 +24,8 @@
 
       <input
         type="submit"
-        value="Zaloguj się">
+        value="Zaloguj się"
+        v-on:click="login()">
 
       <div id="signup">
         <h2>lub</h2>
@@ -44,6 +47,48 @@
         navigateTo: function(subpage) {
             if(this.$route.path != subpage) 
             this.$router.push(subpage)
+        },
+        login: function() {
+          if(!this.checkForm()) {
+            console.log("Done");
+          }
+        },
+        validEmail: function (email) {
+          let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return re.test(email);
+        },
+        checkForm: function() {
+          let email = this.$refs.email.value;
+          let password = this.$refs.password.value;
+
+          this.incorrectEmail = this.incorrectPassword = false;
+
+          let err = false;
+
+          if(email == "" && password == "") {
+            this.$toast.error("Proszę wypełnić pola.");
+            this.incorrectEmail = this.incorrectPassword = true;
+            return true
+          }
+            
+          if(email == "") {
+            this.$toast.error("Pole 'Adres email' nie może być puste.");
+            this.incorrectEmail = true;
+            err = true;
+          } else if(!this.validEmail(email)) {
+            this.$toast.error("Podany adres email jest niepoprawny.");
+            this.incorrectEmail = true;
+            err = true;
+          }
+
+          if(password == "") {
+            this.$toast.error("Pole 'Hasło' nie może być puste.");
+            this.incorrectPassword = true;
+            err = true;
+          }
+
+          if(err)
+            return true;
         }
       }
   }

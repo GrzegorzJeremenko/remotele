@@ -7,6 +7,7 @@
         id="email"
         type="email"
         placeholder="Wpisz swój adres email"
+        ref="email"
         :class="{ error: incorrectEmail }">
 
       <label for="name">Imię i nazwisko</label>
@@ -14,19 +15,23 @@
         id="name"
         type="text"
         placeholder="Wpisz swoje dane"
+        ref="name"
         :class="{ error: incorrectName }">
 
       <label for="password">Hasło</label>
       <input 
         id="password"
         type="password"
-        placeholder="Wpisz swoje hasło">
+        ref="password"
+        placeholder="Wpisz swoje hasło"
+        :class="{ error: incorrectPassword }">
 
       <label for="passwordRepeat">Hasło ponownie</label>
       <input 
         id="passwordRepeat"
         type="password"
         placeholder="Wpisz swoje hasło"
+        ref="passwordRepeat"
         :class="{ error: incorrectPassword }">
 
       <div id="login">
@@ -35,7 +40,8 @@
 
       <input
         type="submit"
-        value="Zarejestruj się">
+        value="Zarejestruj się"
+        v-on:click="register()">
     </form>
   </div>
 </template>
@@ -50,11 +56,82 @@
       }
     },
     methods: {
-        navigateTo: function(subpage) {
-            if(this.$route.path != subpage) 
-            this.$router.push(subpage)
+      navigateTo: function(subpage) {
+          if(this.$route.path != subpage) 
+          this.$router.push(subpage)
+      },
+      register: function() {
+        if(!this.checkForm()) {
+          console.log("Done");
         }
+      },
+      validEmail: function (email) {
+        let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+      },
+      validPassword: function (password) {
+        let re = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,32}$/;
+        return re.test(password);
+      },
+      validName: function (name) {
+        let re = /^[a-zA-Z\p{L}]+ [a-zA-Z\p{L}]+$/u;
+        return re.test(name);
+      },
+      checkForm: function() {
+        let email = this.$refs.email.value;
+        let name = this.$refs.name.value;
+        let password = this.$refs.password.value;
+        let passwordRepeat = this.$refs.passwordRepeat.value;
+
+        this.incorrectEmail = this.incorrectPassword = this.incorrectName = false;
+
+        let err = false;
+
+        if(email == "" && password == "" && name == "" && passwordRepeat == "") {
+          this.$toast.error("Proszę wypełnić pola.");
+          this.incorrectEmail = this.incorrectPassword = this.incorrectName = true;
+          return true
+        }
+
+        if(email == "") {
+          this.$toast.error("Pole 'Adres email' nie może być puste.");
+          this.incorrectEmail = true;
+          err = true;
+        } else if(!this.validEmail(email)) {
+          this.$toast.error("Podany adres email jest niepoprawny.");
+          this.incorrectEmail = true;
+          err = true;
+        }
+
+        if(name == "") {
+          this.$toast.error("Pole 'Imię i nazwisko' nie może być puste.");
+          this.incorrectName = true;
+          err = true;
+        } else if(!this.validName(name)) {
+          this.$toast.error("Imię i nazwisko jest niepoprawne.");
+          this.incorrectName = true;
+          err = true;
+        }
+
+        if(password == "" || passwordRepeat == "") {
+          this.$toast.error("Pole 'Hasło' nie może być puste.");
+          this.incorrectPassword = true;
+          err = true;
+        } else if(!this.validPassword(password)) {
+          this.$toast.error("Hasło musi składać się z:\r\n- minimalnie 8 znaków,\r\n- maksymalnie 32 znaków,\r\n- co najmniej jednego znaku specjalnego,\r\n- z ciągu liter i liczb");
+          this.incorrectPassword = true;
+          err = true;
+        } else if(password != passwordRepeat) {
+          this.$toast.error("Hasła nie są identyczne.");
+          this.incorrectPassword = true;
+          err = true;
+        }
+
+        if(err)
+          return true;
+
       }
+    }
   }
 </script>
 

@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view/>
+    <transition name="fade" mode="out-in">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
@@ -61,5 +63,25 @@
   #app {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  #nprogress .bar {
+    background: #2ecc71 !important;
+  }
+
+  #nprogress .peg {
+    box-shadow: 0 0 10px #2ecc71, 0 0 5px #2ecc71 !important;
+  }
+
+  #nprogress .spinner-icon {
+    border-top-color: #2ecc71 !important;
+    border-left-color: #2ecc71 !important;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .3s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
   }
 </style>

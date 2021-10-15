@@ -7,6 +7,7 @@
         id="email"
         type="email"
         placeholder="Wpisz swój adres email"
+        ref="email"
         :class="{ error: incorrectEmail }">
 
       <div id="register">
@@ -15,7 +16,8 @@
 
       <input
         type="submit"
-        value="Przypomnij hasło">
+        value="Przypomnij hasło"
+        v-on:click="forgot()">
     </form>
   </div>
 </template>
@@ -31,6 +33,35 @@
         navigateTo: function(subpage) {
             if(this.$route.path != subpage) 
             this.$router.push(subpage)
+        },
+        forgot: function() {
+          if(!this.checkForm()) {
+            console.log("Done");
+          }
+        },
+        validEmail: function (email) {
+          let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return re.test(email);
+        },
+        checkForm: function() {
+          let email = this.$refs.email.value;
+
+          this.incorrectEmail = false;
+
+          let err = false;
+
+          if(email == "") {
+            this.$toast.error("Proszę wypełnić pola.");
+            this.incorrectEmail = true;
+            return true
+          } else if(!this.validEmail(email)) {
+            this.$toast.error("Podany adres email jest niepoprawny.");
+            this.incorrectEmail = true;
+            err = true;
+          }
+
+          if(err)
+            return true;
         }
       }
   }

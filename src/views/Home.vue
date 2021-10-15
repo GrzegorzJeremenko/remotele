@@ -82,7 +82,6 @@ export default {
     width: 200px;
     height: 100px;
     margin: -40px 0 0 0;
-    transition: all 3s;
   }
 
   .fade-enter-active,
