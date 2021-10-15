@@ -79,8 +79,9 @@ export default {
   }
 
   div.home div#con img {
-    width: 200px;
-    height: 100px;
+    width: 80%;
+    max-width: 200px;
+    height: auto;
     margin: -40px 0 0 0;
   }
 

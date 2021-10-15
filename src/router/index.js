@@ -5,6 +5,7 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 import Home from '@/views/Home.vue'
+import Dashboard from '@/views/Dashboard.vue'
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,28 @@ const routes = [
       {
         path: 'forgot',
         component: () => import('@/views/Home/Forgot.vue')
+      }
+    ]
+  },
+  {
+    path: '/dashboard',
+    component: Dashboard,
+    children: [
+      {
+        path: '',
+        component: () => import('@/views/Dashboard/Subjects.vue')
+      },
+      {
+        path: 'topics',
+        component: () => import('@/views/Dashboard/Topics.vue')
+      },
+      {
+        path: 'exams',
+        component: () => import('@/views/Dashboard/Exams.vue')
+      },
+      {
+        path: 'settings',
+        component: () => import('@/views/Dashboard/Settings.vue')
       }
     ]
   }
