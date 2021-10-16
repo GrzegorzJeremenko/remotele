@@ -6,16 +6,20 @@
 				<router-view/>
 			</transition>
 		</div>
+		<SideBar />
   </div>
 </template>
 
 <script>
 	import Menu from '@/components/Dashboard/Menu.vue'
+	import SideBar from '@/components/Dashboard/SideBar.vue'
+
 	import "@/assets/css/fontello.css";
 
 	export default {
 		components: {
-			Menu
+			Menu,
+			SideBar
 		}
 	}
 </script>
@@ -38,9 +42,9 @@
 	}
 
 	.fade-enter-active, .fade-leave-active {
-    transition: opacity .3s;
+	transition: opacity .3s;
   }
   .fade-enter, .fade-leave-to {
-    opacity: 0;
+	opacity: 0;
   }
 </style>

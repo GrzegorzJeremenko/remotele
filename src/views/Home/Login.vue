@@ -57,7 +57,7 @@
 
             login(email, password)
             .then((res) => {
-              localStorage.setItem('user', res.data.user);
+              localStorage.setItem('user', JSON.stringify(res.data.user));
               localStorage.setItem('token', res.data.token);
 
               this.navigateTo('/dashboard')

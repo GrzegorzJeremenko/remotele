@@ -1,6 +1,6 @@
 <template>
   <div class="menu">
-    <img src="@/assets/logo.png">
+	<img src="@/assets/logo.png">
 		<ol>
 			<li
 				v-for="(subpage, index) in subpages"
@@ -86,7 +86,7 @@ export default {
 
 	div.menu ol li {
 		width: calc(100% - 1px);
-		height: 50px;
+		height: 3vw;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
