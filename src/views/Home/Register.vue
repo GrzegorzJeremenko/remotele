@@ -26,7 +26,7 @@
         placeholder="Wpisz swoje hasło"
         :class="{ error: incorrectPassword }">
 
-      <label for="passwordRepeat">Hasło ponownie</label>
+      <label for="passwordRepeat">Powtórz hasło</label>
       <input 
         id="passwordRepeat"
         type="password"
@@ -47,6 +47,8 @@
 </template>
 
 <script>
+  import { register } from '@/services/home.js'
+
   export default {
     data() {
       return {
@@ -62,7 +64,32 @@
       },
       register: function() {
         if(!this.checkForm()) {
-          console.log("Done");
+          let email = this.$refs.email.value;
+          let name = this.$refs.name.value;
+          let password = this.$refs.password.value;
+
+          register(email, name, password)
+          .then(() => {
+            this.$toast("Rejestracja powiodła się. Aby aktywować konto, sprawdź podany adres email.")
+
+            this.navigateTo('/login')
+          })
+          .catch((err) => {
+            switch(err.status) {
+              case 400:
+                this.$toast.error(err.data.error)
+                break
+
+              case 409:
+                this.$toast.error("Podany adres email jest używany przez inne konto.")
+                this.incorrectEmail = true;
+                break
+
+              default:
+                this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                break
+            }
+          })
         }
       },
       validEmail: function (email) {
@@ -129,7 +156,6 @@
 
         if(err)
           return true;
-
       }
     }
   }

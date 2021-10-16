@@ -16,15 +16,23 @@ const routes = [
     children: [
       {
         path: '',
+        name: 'login',
         component: () => import('@/views/Home/Login.vue')
       },
       {
         path: 'register',
+        name: 'register',
         component: () => import('@/views/Home/Register.vue')
       },
       {
         path: 'forgot',
+        name: 'forgot',
         component: () => import('@/views/Home/Forgot.vue')
+      },
+      {
+        path: 'reset/:token',
+        name: 'reset',
+        component: () => import('@/views/Home/Reset.vue')
       }
     ]
   },
@@ -34,7 +42,11 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('@/views/Dashboard/Subjects.vue')
+        component: () => import('@/views/Dashboard/Home.vue')
+      },
+      {
+        path: 'classes',
+        component: () => import('@/views/Dashboard/Classes.vue')
       },
       {
         path: 'topics',
@@ -61,7 +73,19 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   NProgress.start()
   NProgress.set(0.1)
-  next()
+
+  if(localStorage.getItem('token') === null) {
+    if(to.name !== "login" && to.name !== "register" && to.name !== "forgot" && to.name !== "reset") 
+      next({ path: '/' })
+    else
+      next()
+  } else {
+    if(to.name === "login" || to.name === "register" || to.name === "forgot" || to.name === "reset") 
+      next({ path: '/dashboard' })
+    else
+      next()
+  } 
+  
 })
 router.afterEach(() => {
   setTimeout(() => NProgress.done(), 500)

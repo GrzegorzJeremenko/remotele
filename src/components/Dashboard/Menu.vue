@@ -23,9 +23,14 @@ export default {
 			permission: 0,
 			subpages: [
 				{
+					name: 'Start',
+					icon: 'icon-home-outline',
+					path: '/dashboard',
+				},
+				{
 					name: 'Klasy',
 					icon: 'icon-users-outline',
-					path: '/dashboard',
+					path: '/dashboard/classes',
 				},
 				{
 					name: 'Tematy',
@@ -103,12 +108,12 @@ export default {
 	div.menu ol li i {
 		width: 30%;
 		text-align: center;
-		font-size: 1.4rem;
+		font-size: 1.2vw;
 	}
 
 	div.menu ol li p {
 		width: 70%;
-		font-size: 1rem;
+		font-size: 1vw;
 	}
 
 	div.menu footer {

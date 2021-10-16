@@ -1,6 +1,6 @@
 <template>
-  <div class="subject">
-    subject
+  <div class="classes">
+    classes
   </div>
 </template>
 

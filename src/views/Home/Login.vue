@@ -36,6 +36,8 @@
 </template>
 
 <script>
+  import { login } from '@/services/home.js'
+
   export default {
     data() {
       return {
@@ -50,7 +52,28 @@
         },
         login: function() {
           if(!this.checkForm()) {
-            console.log("Done");
+            let email = this.$refs.email.value;
+            let password = this.$refs.password.value;
+
+            login(email, password)
+            .then((res) => {
+              localStorage.setItem('user', res.data.user);
+              localStorage.setItem('token', res.data.token);
+
+              this.navigateTo('/dashboard')
+            })
+            .catch((err) => {
+              switch(err.status) {
+                case 400:
+                  this.$toast.error(err.data.error)
+                  this.incorrectEmail = this.incorrectPassword = true;
+                  break
+
+                default:
+                  this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                  break
+              }
+            })
           }
         },
         validEmail: function (email) {
@@ -83,6 +106,10 @@
 
           if(password == "") {
             this.$toast.error("Pole 'Hasło' nie może być puste.");
+            this.incorrectPassword = true;
+            err = true;
+          } else if(password.length < 8) {
+            this.$toast.error("Hasło jest za krótkie.");
             this.incorrectPassword = true;
             err = true;
           }

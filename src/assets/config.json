@@ -35,6 +35,12 @@
       "css": "cog-outline",
       "code": 59397,
       "src": "typicons"
+    },
+    {
+      "uid": "a42f298da5c64e646a5d532724cd6e15",
+      "css": "home-outline",
+      "code": 59392,
+      "src": "typicons"
     }
   ]
 }
