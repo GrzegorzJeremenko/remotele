@@ -2,7 +2,7 @@
 	<div class="account">
 		<img :src="profile.img" >
 		<div id="information">
-			<h1>{{ profile.fullname }}</h1>
+			<h1>{{ profile.fullname.length > 18 ? profile.fullname.substr(0, 18) + "..." : profile.fullname }}</h1>
 			<p>Uczeń</p>
 		</div>
 		<i 
@@ -25,11 +25,14 @@
 			}
 		},
 		beforeMount: function() {
-			let userData = JSON.parse(localStorage.getItem('user'))
-
-			this.profile.fullname = userData.fullname;
+			window.addEventListener('storage', this.update(), false)
 		},
 		methods: {
+			update: function() {
+				let userData = JSON.parse(localStorage.getItem('user'))
+
+				this.profile.fullname = userData.fullname;
+			},
 			logout: function() {
 				localStorage.clear()
 				this.navigateTo('/')
@@ -62,6 +65,7 @@
 
 	div.account div#information {
 		display: flex;
+		width: 10vw;
 		flex-direction: column;
 		justify-content: center;
 		margin: 0 0 0 1vw;
@@ -84,7 +88,7 @@
 		text-align: center;
 		line-height: 2vw;
 		font-size: 1.4vw;
-		margin: 0 0 0 1.4vw;
+		margin: 0 0 0 .7vw;
 		cursor: pointer;
 		transition: color .3s ease;
 	}

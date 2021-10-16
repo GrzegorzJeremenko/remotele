@@ -38,6 +38,8 @@
 <script>
   import { login } from '@/services/home.js'
 
+  import NProgress from 'nprogress'
+
   export default {
     data() {
       return {
@@ -54,6 +56,9 @@
           if(!this.checkForm()) {
             let email = this.$refs.email.value;
             let password = this.$refs.password.value;
+
+            NProgress.start()
+            NProgress.set(0.1)
 
             login(email, password)
             .then((res) => {
@@ -73,6 +78,8 @@
                   this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
                   break
               }
+
+              setTimeout(() => NProgress.done(), 500)
             })
           }
         },
