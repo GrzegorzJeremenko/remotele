@@ -19,12 +19,15 @@
                     v-for="(item, index) in plan"
                     :style="{ 
                         height: (countHeight(item.timeStart, item.timeEnd) + 'vw'),
-                        marginTop: (countMargin(item.timeStart, plan[index > 0 ? index - 1 : index].timeEnd) + 'vw'
-                        )}"
+                        marginTop: (countMargin(item.timeStart, plan[index > 0 ? index - 1 : index].timeEnd) + 'vw'),
+                        backgroundColor: countColor(item.timeStart, item.timeEnd, false)
+                        }"
                     :key="index">
-                    <div class="time">
+                    <div
+                        class="time"
+                        :style="{ backgroundColor: countColor(item.timeStart, item.timeEnd, true) }">
                         <p>{{ item.timeStart }}</p>
-                        <p>{{ item.timeEnd }}</p>
+                        <p>{{ item.timeEnd.split(':')[0] >= 24 ? '0' + item.timeEnd.split(':')[0] - 24 + ':' + item.timeEnd.split(':')[1] : item.timeEnd }}</p>
                     </div>
                     <p>{{ item.name }}</p>
                 </div>
@@ -44,23 +47,13 @@
                 plan: [
                     {
                         timeStart: '07:45',
-                        timeEnd: '08:30',
-                        name: 'Klasa 1A'
+                        timeEnd: '9:20',
+                        name: 'Robienie tego gówna'
                     },
                     {
                         timeStart: '09:25',
                         timeEnd: '10:10',
-                        name: 'Klasa 2B'
-                    },
-                    {
-                        timeStart: '10:15',
-                        timeEnd: '11:00',
-                        name: 'Klasa 3C'
-                    },
-                    {
-                        timeStart: '11:15',
-                        timeEnd: '12:00',
-                        name: 'Klasa 4D'
+                        name: 'Konrad Dobosz'
                     },
                 ],
                 hours: [],
@@ -108,6 +101,9 @@
                 for(let i = 0; i < steps; i++) {
                     if(i % 2 == 0) {
                         let hour = this.timelineStart + (i / 2)
+                        if(hour >= 24)
+                            hour -= 24;
+
                         this.hours.push({ time:  (hour < 10 ? '0' + hour : hour) + ':00'})
                     } else this.hours.push({ time: '' })
                 }
@@ -136,6 +132,28 @@
                 if(startHour != this.timelineStart) {
                     return (((startHour - endHour) * 260) + ((startMinut - endMinut) * (130 / 30))) * 0.01
                 } else return (startMinut * (130 / 30)) * 0.01
+            },
+            countColor: function(startTime, endTime, time) {
+                let date = new Date();
+
+                let start = startTime.split(':')
+                startTime = parseInt((start[0][0] == '0' ? start[0].substring(1, 2) : start[0]) * 100) + parseInt(start[1][0] == '0' ? start[1].substring(1, 2) : start[1])
+
+                let end = endTime.split(':')
+                endTime = parseInt((end[0][0] == '0' ? end[0].substring(1, 2) : end[0]) * 100) + parseInt(end[1][0] == '0' ? end[1].substring(1, 2) : end[1])
+
+                let nowTime = (date.getHours() * 100) + date.getMinutes()
+
+                if(nowTime >= startTime && nowTime <= endTime)
+                    if(time)
+                        return '#d35400'
+                    else
+                        return '#e67e22'
+                else
+                    if(time)
+                        return '#27ae60'
+                    else
+                        return '#2ecc71'
             }
         },
         mounted: function() {

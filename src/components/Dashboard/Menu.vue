@@ -84,7 +84,7 @@ export default {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
-		margin: 60px 0 0 0;
+		margin: 4vw 0 0 0;
 	}
 
 	div.menu ol li {

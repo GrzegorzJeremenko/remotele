@@ -1,9 +1,11 @@
 <template>
   <div class="sidebar">
 	<Account :user="user" />
-	<LessonPlan
-		v-if="$route.path === '/dashboard'"
-		:user="user" />
+	<transition name="fade" mode="out-in">
+		<LessonPlan
+			v-if="$route.path === '/dashboard'"
+			:user="user" />
+	</transition>
   </div>
 </template>
 
@@ -32,5 +34,12 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+	}
+
+	.fade-enter-active, .fade-leave-active {
+		transition: opacity .3s;
+	}
+	.fade-enter, .fade-leave-to {
+		opacity: 0;
 	}
 </style>

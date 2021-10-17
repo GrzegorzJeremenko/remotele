@@ -19,10 +19,10 @@
 		},
 		computed: {
 			imagePath: function() {
-				if(this.user.img === undefined)
+				if(this.user.avatar === undefined)
 					return require('@/assets/Dashboard/AccountDefault.png')
 				else
-					return this.user.img
+					return this.user.avatar
 			},
 			fullName: function() {
 				if(this.user.fullname.length > 18)
@@ -48,7 +48,7 @@
 	div.account {
 		width: 100%;
 		height: 3.7vw;
-		margin: 25px 0 80px 0;
+		margin: 25px 0 3vw 0;
 		max-height: 70px;
 		display: flex;
 		flex-direction: row;

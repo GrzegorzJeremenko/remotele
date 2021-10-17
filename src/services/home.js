@@ -32,12 +32,12 @@ const login = (email, password) => {
 	})
 }
 
-const register = (email, name, password) => {
+const register = (email, fullname, password) => {
 	return new Promise((resolve, reject) => {
 		let body = {
 			email,
 			password,
-			name
+			fullname
 		}
 
 		axios({
