@@ -14,7 +14,20 @@
                 </div>
             </div>
             <div id="items">
-
+                <div 
+                    class="item"
+                    v-for="(item, index) in plan"
+                    :style="{ 
+                        height: (countHeight(item.timeStart, item.timeEnd) + 'vw'),
+                        marginTop: (countMargin(item.timeStart, plan[index > 0 ? index - 1 : index].timeEnd) + 'vw'
+                        )}"
+                    :key="index">
+                    <div class="time">
+                        <p>{{ item.timeStart }}</p>
+                        <p>{{ item.timeEnd }}</p>
+                    </div>
+                    <p>{{ item.name }}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -30,24 +43,24 @@
             return {
                 plan: [
                     {
-                        timeStart: '08:00',
-                        timeEnd: '08:45',
-                        name: 'Klasa 3E'
+                        timeStart: '07:45',
+                        timeEnd: '08:30',
+                        name: 'Klasa 1A'
                     },
                     {
-                        timeStart: '09:00',
-                        timeEnd: '09:45',
-                        name: 'Klasa 3E'
+                        timeStart: '09:25',
+                        timeEnd: '10:10',
+                        name: 'Klasa 2B'
                     },
                     {
-                        timeStart: '10:00',
-                        timeEnd: '10:45',
-                        name: 'Klasa 3E'
+                        timeStart: '10:15',
+                        timeEnd: '11:00',
+                        name: 'Klasa 3C'
                     },
                     {
-                        timeStart: '12:00',
-                        timeEnd: '12:45',
-                        name: 'Klasa 3E'
+                        timeStart: '11:15',
+                        timeEnd: '12:00',
+                        name: 'Klasa 4D'
                     },
                 ],
                 hours: [],
@@ -60,12 +73,10 @@
             lineMove: function() {
                 let date = new Date();
 
-                date.setHours(date.getHours() + 4) //remove
-
-                if(this.timelineStart <= date.getHours()) {
+                if(this.timelineStart <= date.getHours() && this.timelineEnd > date.getHours()) {
                     date.setHours(date.getHours() - this.timelineStart)
 
-                    let linePos = ( ( date.getHours() * 200 + Math.round( 100 / 30 * date.getMinutes() ) ) + 100 ) * 0.01
+                    let linePos = ( ( date.getHours() * 260 + Math.round( 130 / 30 * date.getMinutes() ) ) + 130 ) * 0.01
 
                     this.$refs.line.style.top = linePos + 'vw'
                     this.$refs.line.style.display = 'block'
@@ -84,6 +95,14 @@
 
                 this.timelineEnd = parseInt(this.timelineEnd)
 
+                let lastLesson = this.plan[this.plan.length - 1].timeEnd.split(':');
+                let lastLessonHour = lastLesson[0][0] == '0' ? lastLesson[0].substring(1, 2) : lastLesson[0]
+                let lastLessonMinute = lastLesson[1][0] == '0' ? lastLesson[1].substring(1, 2) : lastLesson[1]
+
+                let lastLessonTime = (((lastLessonHour - this.timelineEnd) * 130) + (lastLessonMinute * (130 / 60))) * 0.01
+
+                this.timelineEnd += lastLessonTime > Math.floor(lastLessonTime) ? Math.ceil(lastLessonTime) : lastLessonTime + 1
+
                 let steps = (this.timelineEnd - this.timelineStart) * 2 + 1;
 
                 for(let i = 0; i < steps; i++) {
@@ -92,6 +111,31 @@
                         this.hours.push({ time:  (hour < 10 ? '0' + hour : hour) + ':00'})
                     } else this.hours.push({ time: '' })
                 }
+            },
+            countHeight: function(startTime, endTime) {
+                let start = startTime.split(':')
+                let startHour = start[0][0] == '0' ? start[0].substring(1, 2) : start[0]
+                let startMinut = start[1][0] == '0' ? start[1].substring(1, 2) : start[1]
+
+                let end = endTime.split(':')
+                let endHour = end[0][0] == '0' ? end[0].substring(1, 2) : end[0]
+                let endMinut = end[1][0] == '0' ? end[1].substring(1, 2) : end[1]
+
+                return (((endHour - startHour) * 260) + ((endMinut - startMinut) * (130 / 30))) * 0.01
+            },
+            countMargin: function(startTime, endTime) {
+                
+                let start = startTime.split(':')
+                let startHour = start[0][0] == '0' ? start[0].substring(1, 2) : start[0]
+                let startMinut = start[1][0] == '0' ? start[1].substring(1, 2) : start[1]
+
+                let end = endTime.split(':')
+                let endHour = end[0][0] == '0' ? end[0].substring(1, 2) : end[0]
+                let endMinut = end[1][0] == '0' ? end[1].substring(1, 2) : end[1]
+
+                if(startHour != this.timelineStart) {
+                    return (((startHour - endHour) * 260) + ((startMinut - endMinut) * (130 / 30))) * 0.01
+                } else return (startMinut * (130 / 30)) * 0.01
             }
         },
         mounted: function() {
@@ -108,21 +152,30 @@
 
 <style scoped>
     div.lessonPlan {
-        width: 80%;
+        width: 90%;
         background-color: #eee;
-        border-radius: 20px;
+        border-radius: .6vw;
         display: flex;
         flex-direction: column;
+        align-items: center;
     }
 
     div.lessonPlan h1 {
+        width: 80%;
+        padding: 0 0 .5vw 0;
         font-size: 1.1vw;
         text-align: center;
         margin: 1vw 0 0 0;
+        color: #444;
+        border-bottom: 1px solid #ccc;
     }
 
     div.lessonPlan div#plan {
-        margin: 1vw 0 1vw 0;
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        margin: .5vw 0 1vw 0;
+        justify-content: space-around;
     }
 
     div.lessonPlan div#plan div#timeline {
@@ -131,7 +184,7 @@
 
     div.lessonPlan div#plan div#timeline div.item {
         width: 100%;
-        height: calc(1vw - 1px);
+        height: calc(1.3vw - 1px);
         border-bottom: 1px solid #ccc;
         display: flex;
         flex-direction: column;
@@ -151,5 +204,40 @@
     div.lessonPlan div#plan div#timeline div.item p {
         font-size: .7vw;
         color: #666;
+    }
+
+    div.lessonPlan div#plan div#items {
+        width: 70%;
+        margin: 1.3vw 0 0 0;
+    }
+
+    div.lessonPlan div#plan div#items div.item {
+        background-color: #2ecc71;
+        border-radius: .2vw;
+        color: #fff;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    div.lessonPlan div#plan div#items div.item div.time {
+        width: 20%;
+        height: 100%;
+        background-color: #27ae60;
+        border-radius: .2vw 0 0 .2vw;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    div.lessonPlan div#plan div#items div.item div.time p {
+        font-size: .6vw;
+        margin: 0;
+    }
+
+    div.lessonPlan div#plan div#items div.item p {
+        font-size: .8vw;
+        margin: 0 0 0 .2vw;
     }
 </style>
