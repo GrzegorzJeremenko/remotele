@@ -52,7 +52,7 @@ const register = (email, fullname, password) => {
 					break
 
 				case 400:
-					reject(res)
+					reject(res.data.error)
 					break
 
 				default:

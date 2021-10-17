@@ -75,9 +75,9 @@
             this.navigateTo('/login')
           })
           .catch((err) => {
-            switch(err.status) {
+            switch(err.response.status) {
               case 400:
-                this.$toast.error(err.data.error)
+                this.$toast.error(err.response.data.error)
                 break
 
               case 409:

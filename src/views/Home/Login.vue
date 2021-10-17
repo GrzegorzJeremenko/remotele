@@ -68,9 +68,9 @@
               this.navigateTo('/dashboard')
             })
             .catch((err) => {
-              switch(err.status) {
+              switch(err.response.status) {
                 case 400:
-                  this.$toast.error(err.data.error)
+                  this.$toast.error(err.response.data.error)
                   this.incorrectEmail = this.incorrectPassword = true;
                   break
 
