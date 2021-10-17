@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard">
-		<Menu />
+		<Menu :user="user" />
 		<div id="inside">
 			<transition name="fade" mode="out-in">
 				<router-view/>
 			</transition>
 		</div>
-		<SideBar />
+		<SideBar :user="user" />
   </div>
 </template>
 
@@ -20,6 +20,14 @@
 		components: {
 			Menu,
 			SideBar
+		},
+		data() {
+			return {
+				user: Object
+			}
+		},
+		beforeMount: function() {
+			this.user = JSON.parse(localStorage.getItem('user'))
 		}
 	}
 </script>

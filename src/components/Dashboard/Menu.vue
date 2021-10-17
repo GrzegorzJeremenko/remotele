@@ -17,7 +17,10 @@
 
 <script>
 export default {
-  name: 'Menu',
+	name: 'Menu',
+	props: {
+		user: Object
+	},
 	data() {
 		return {
 			permission: 0,

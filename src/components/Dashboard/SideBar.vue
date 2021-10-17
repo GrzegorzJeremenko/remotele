@@ -1,16 +1,24 @@
 <template>
   <div class="sidebar">
-	<Account />
+	<Account :user="user" />
+	<LessonPlan
+		v-if="$route.path === '/dashboard'"
+		:user="user" />
   </div>
 </template>
 
 <script>
 	import Account from "@/components/Dashboard/SideBar/Account.vue"
+	import LessonPlan from "@/components/Dashboard/SideBar/Widgets/LessonPlan.vue"
 
 	export default {
 		name: 'Sidebar',
+		props: {
+			user: Object
+		},
 		components: {
-			Account
+			Account,
+			LessonPlan
 		}
 	}
 </script>
