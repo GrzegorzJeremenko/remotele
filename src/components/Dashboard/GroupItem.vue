@@ -1,9 +1,9 @@
 <template>
     <div
         class="group"
-        v-on:click="navigateTo('/dashboard/classes/' + group.id)">
+        v-on:click="navigateTo('/dashboard/classes/' + group._id)">
         <h1>{{ group.emoji }}</h1>
-        <h2>{{ shortName(group.name) }}</h2>
+        <h2 v-bind:title="group.name">{{ shortName(group.name) }}</h2>
     </div>
 </template>
 
@@ -20,9 +20,9 @@
             },
             shortName(name) {
                 if(name.length > 8)
-                    return name.substring(0, 6) + '...'
+                    return name.charAt(0).toUpperCase() + name.slice(1).substring(0, 5) + '...'
                 else
-                    return name
+                    return name.charAt(0).toUpperCase() + name.slice(1);
             }
         }
     }

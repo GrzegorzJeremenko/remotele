@@ -51,6 +51,11 @@ const routes = [
         component: () => import('@/views/Dashboard/Classes.vue')
       },
       {
+        path: 'classes/:_id',
+        name: 'Klasa',
+        component: () => import('@/views/Dashboard/Group.vue')
+      },
+      {
         path: 'topics',
         name: 'Tematy',
         component: () => import('@/views/Dashboard/Topics.vue')

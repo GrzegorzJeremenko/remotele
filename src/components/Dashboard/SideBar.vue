@@ -5,6 +5,7 @@
 		<LessonPlan
 			v-if="$route.path === '/dashboard'"
 			:user="user" />
+		<GroupListProperties v-else-if="$route.path === '/dashboard/classes'"/>
 	</transition>
   </div>
 </template>
@@ -12,6 +13,7 @@
 <script>
 	import Account from "@/components/Dashboard/SideBar/Account.vue"
 	import LessonPlan from "@/components/Dashboard/SideBar/Widgets/LessonPlan.vue"
+	import GroupListProperties from "@/components/Dashboard/SideBar/Widgets/GroupListProperties.vue"
 
 	export default {
 		name: 'Sidebar',
@@ -20,7 +22,8 @@
 		},
 		components: {
 			Account,
-			LessonPlan
+			LessonPlan,
+			GroupListProperties
 		}
 	}
 </script>
@@ -29,7 +32,6 @@
 	div.sidebar {
 		width: 20%;
 		height: 100%;
-		overflow-y: auto;
 		border-left: 1px solid #ccc;
 		background-color: #fff;
 		display: flex;

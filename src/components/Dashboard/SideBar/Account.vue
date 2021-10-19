@@ -48,7 +48,7 @@
 	div.account {
 		width: 100%;
 		height: 3.7vw;
-		margin: 25px 0 3vw 0;
+		margin: 25px 0 4vw 0;
 		max-height: 70px;
 		display: flex;
 		flex-direction: row;
