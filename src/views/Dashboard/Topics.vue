@@ -4,6 +4,15 @@
   </div>
 </template>
 
-<style scoped>
+<script>
+  export default {
 
+  }
+</script>
+
+<style scoped>
+  div.topics {
+    display: flex;
+    flex-direction: column;
+  }
 </style>

@@ -2,6 +2,7 @@
   <div class="dashboard">
 		<Menu :user="user" />
 		<div id="inside">
+			<TopBar />
 			<transition name="fade" mode="out-in">
 				<router-view/>
 			</transition>
@@ -13,13 +14,15 @@
 <script>
 	import Menu from '@/components/Dashboard/Menu.vue'
 	import SideBar from '@/components/Dashboard/SideBar.vue'
+	import TopBar from '@/components/Dashboard/TopBar.vue'
 
 	import "@/assets/css/fontello.css";
 
 	export default {
 		components: {
 			Menu,
-			SideBar
+			SideBar,
+			TopBar
 		},
 		data() {
 			return {
@@ -45,6 +48,8 @@
 	div.dashboard div#inside {
 		width: 65%;
 		height: 100%;
+		display: flex;
+		flex-direction: column;
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
@@ -52,6 +57,7 @@
 	.fade-enter-active, .fade-leave-active {
 		transition: opacity .3s;
 	}
+	
 	.fade-enter, .fade-leave-to {
 		opacity: 0;
 	}

@@ -4,6 +4,14 @@
   </div>
 </template>
 
-<style scoped>
+<script>
+  export default {
+  }
+</script>
 
+<style scoped>
+  div.home {
+    display: flex;
+    flex-direction: column;
+  }
 </style>

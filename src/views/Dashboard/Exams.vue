@@ -1,9 +1,18 @@
 <template>
-  <div class="exam">
+  <div class="exams">
     exam
   </div>
 </template>
 
-<style scoped>
+<script>
+  export default {
 
+  }
+</script>
+
+<style scoped>
+  div.exams {
+    display: flex;
+    flex-direction: column;
+  }
 </style>

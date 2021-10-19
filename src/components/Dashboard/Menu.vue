@@ -123,6 +123,6 @@ export default {
 		position: absolute;
 		bottom: 5px;
 		color: #888;
-		font-size: .8rem;
+		font-size: .7vw;
 	}
 </style>

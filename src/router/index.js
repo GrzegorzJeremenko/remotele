@@ -42,22 +42,27 @@ const routes = [
     children: [
       {
         path: '',
+        name: 'Start',
         component: () => import('@/views/Dashboard/Home.vue')
       },
       {
         path: 'classes',
+        name: 'Klasy',
         component: () => import('@/views/Dashboard/Classes.vue')
       },
       {
         path: 'topics',
+        name: 'Tematy',
         component: () => import('@/views/Dashboard/Topics.vue')
       },
       {
         path: 'exams',
+        name: 'Sprawdziany',
         component: () => import('@/views/Dashboard/Exams.vue')
       },
       {
         path: 'settings',
+        name: 'Ustawienia',
         component: () => import('@/views/Dashboard/Settings.vue')
       }
     ]
