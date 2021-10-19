@@ -26,7 +26,7 @@
 			},
 			fullName: function() {
 				if(this.user.fullname.length > 18)
-					return this.user.fullname.substr(0, 18) + '...'
+					return this.user.fullname.substr(0, 16) + '...'
 				else
 					return this.user.fullname
 			}

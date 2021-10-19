@@ -3,7 +3,7 @@
         class="group"
         v-on:click="navigateTo('/dashboard/classes/' + group.id)">
         <h1>{{ group.emoji }}</h1>
-        <h2>{{ group.name }}</h2>
+        <h2>{{ shortName(group.name) }}</h2>
     </div>
 </template>
 
@@ -17,6 +17,12 @@
             navigateTo: function(subpage) {
                 if(this.$route.path != subpage) 
                 this.$router.push(subpage)
+            },
+            shortName(name) {
+                if(name.length > 8)
+                    return name.substring(0, 6) + '...'
+                else
+                    return name
             }
         }
     }

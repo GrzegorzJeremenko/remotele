@@ -29,6 +29,7 @@
 	div.sidebar {
 		width: 20%;
 		height: 100%;
+		overflow-y: auto;
 		border-left: 1px solid #ccc;
 		background-color: #fff;
 		display: flex;

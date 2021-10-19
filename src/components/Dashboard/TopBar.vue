@@ -31,14 +31,14 @@
   }
 
   div.topbar h2 {
-    font-size: 1.1vw;
+    font-size: 18px;
     margin: 0 0 0 40px;
     color: #333;
   }
 
   div.topbar div.date {
     margin: 0 40px 0 0;
-    font-size: 1vw;
+    font-size: 16px;
     color: #555;
   }
 
