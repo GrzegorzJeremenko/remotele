@@ -1,9 +1,9 @@
 const config = require('@/services/config.js')
 const axios = require('axios')
 
-const token = localStorage.getItem('token')
-
 const getGroups = () => {
+	const token = localStorage.getItem('token')
+
 	return new Promise((resolve, reject) => {
 		axios({
 			method: 'GET',
@@ -32,6 +32,8 @@ const getGroups = () => {
 }
 
 const createGroup = (name, subject, emoji) => {
+	const token = localStorage.getItem('token')
+
 	return new Promise((resolve, reject) => {
         let body = {
             name,
