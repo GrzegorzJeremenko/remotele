@@ -47,7 +47,7 @@ const register = (email, fullname, password) => {
 		})
 		.then((res) => {
 			switch(res.status) {
-				case 200:
+				case 201:
 					resolve(res)
 					break
 

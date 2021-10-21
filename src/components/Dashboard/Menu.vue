@@ -42,7 +42,7 @@ export default {
 				},
 				{
 					name: 'Testy',
-					icon: 'icon-check-outline',
+					icon: 'icon-pencil',
 					path: '/dashboard/exams',
 				},
 				{

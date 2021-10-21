@@ -3,7 +3,7 @@
 		<img :src="imagePath" >
 		<div id="information">
 			<h1>{{ fullName }}</h1>
-			<p>Uczeń</p>
+			<p>{{ roleName }}</p>
 		</div>
 		<i 
 			class="icon-right-open"
@@ -29,6 +29,21 @@
 					return this.user.fullname.substr(0, 16) + '...'
 				else
 					return this.user.fullname
+			},
+			roleName: function() {
+				switch(this.user.role) {
+					case 'student':
+						return 'Uczeń'
+
+					case 'teacher':
+						return 'Nauczyciel'
+
+					case 'admin':
+						return 'Administrator'
+
+					default:
+						return 'NaN'
+				}
 			}
 		},
 		methods: {
@@ -46,13 +61,20 @@
 
 <style scoped>
 	div.account {
+		position: sticky;
+		top: 0;
 		width: 100%;
+		background-color: #fff;
 		height: 3.7vw;
-		margin: 25px 0 4vw 0;
 		max-height: 70px;
 		display: flex;
+		padding: 25px 0 25px 0;
+		margin: 0 0 calc(4vw - 25px) 0;
 		flex-direction: row;
 		align-items: center;
+		-webkit-box-shadow: 0px 20px 20px 0px rgba(255,255,255,1);
+		-moz-box-shadow: 0px 20px 20px 0px rgba(255,255,255,1);
+		box-shadow: 0px 0px 20px 20px rgba(255,255,255,1);
 	}
 
 	div.account img {

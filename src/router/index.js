@@ -52,17 +52,26 @@ const routes = [
       },
       {
         path: 'classes/:_id',
-        name: 'Klasa',
         component: () => import('@/views/Dashboard/Group.vue'),
         children: [
           {
             path: '',
-            name: 'Tematy',
+            name: 'Klasa - Start',
             component: () => import('@/views/Dashboard/Topics.vue')
           },
           {
-            path: 'testy',
-            name: 'Testy',
+            path: 'topics',
+            name: 'Klasa - Tematy',
+            component: () => import('@/views/Dashboard/Exams.vue')
+          },
+          {
+            path: 'exams',
+            name: 'Klasa - Testy',
+            component: () => import('@/views/Dashboard/Topics.vue')
+          },
+          {
+            path: 'todo',
+            name: 'Klasa - Notatki',
             component: () => import('@/views/Dashboard/Topics.vue')
           }
         ]

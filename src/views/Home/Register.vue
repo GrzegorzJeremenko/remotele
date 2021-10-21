@@ -72,7 +72,7 @@
           .then(() => {
             this.$toast("Rejestracja powiodła się. Aby aktywować konto, sprawdź podany adres email.")
 
-            this.navigateTo('/login')
+            this.navigateTo('/')
           })
           .catch((err) => {
             switch(err.response.status) {
