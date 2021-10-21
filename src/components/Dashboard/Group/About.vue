@@ -125,6 +125,10 @@
         min-width: 25px;
     }
 
+    div.aboutGroup div#userList ul li p {
+        font-size: 14px;
+    }
+
     div.aboutGroup div#userList ul li i.icon-cancel {
         transition: color .3s ease;
         cursor: pointer;

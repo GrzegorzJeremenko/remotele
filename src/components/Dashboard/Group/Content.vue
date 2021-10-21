@@ -3,49 +3,77 @@
 		<div id="menu">
 			<div
 				class="subopt"
-				:class="$route.name === 'Klasa - Start' ? 'active' : ''"
-				v-on:click="navigateTo('/dashboard/classes/' + $route.params._id)">
+				:class="contentType === '' ? 'active' : ''"
+				v-on:click="changeContent('')">
 				<i class="icon-home-outline"></i>
 				<p>Start</p>
 			</div>
 			<div
 				class="subopt"
-				:class="$route.name === 'Klasa - Tematy' ? 'active' : ''"
-				v-on:click="navigateTo('/dashboard/classes/' + $route.params._id + '/topics')">
+				:class="contentType === 'topics' ? 'active' : ''"
+				v-on:click="changeContent('topics')">
 				<i class="icon-doc-text-1"></i>
 				<p>Tematy</p>
 			</div>
 			<div
 				class="subopt"
-				:class="$route.name === 'Klasa - Testy' ? 'active' : ''"
-				v-on:click="navigateTo('/dashboard/classes/' + $route.params._id + '/exams')">
+				:class="contentType === 'exams' ? 'active' : ''"
+				v-on:click="changeContent('exams')">
 				<i class="icon-pencil"></i>
 				<p>Testy</p>
 			</div>
 			<div
 				class="subopt"
-				:class="$route.name === 'Klasa - Notatki' ? 'active' : ''"
-				v-on:click="navigateTo('/dashboard/classes/' + $route.params._id + '/todo')">
+				:class="contentType === 'todo' ? 'active' : ''"
+				v-on:click="changeContent('todo')">
 				<i class="icon-check-outline"></i>
 				<p>Notatki</p>
 			</div>
 		</div>
 		<div id="content">
-			<router-view/>
+			<transition name="fade" mode="out-in">
+				<Topics
+					v-if="contentType === 'topics'"
+					:group="group"/>
+				<Exams
+					v-else-if="contentType === 'exams'"
+					:group="group"/>
+				<Todo
+					v-else-if="contentType === 'todo'"
+					:group="group"/>
+				<Start
+					v-else
+					:group="group"/>
+			</transition>
 		</div>
 	</div>
 </template>
 
 <script>
+	import Start from "@/components/Dashboard/Group/Start.vue"
+	import Topics from "@/components/Dashboard/Group/Topics.vue"
+	import Exams from "@/components/Dashboard/Group/Exams.vue"
+	import Todo from "@/components/Dashboard/Group/Todo.vue"
+
 	export default {
 		name: 'ContentGroup',
+		components: {
+			Start,
+			Topics,
+			Exams,
+			Todo
+		},
 		props: {
 			group: Object
 		},
+		data() {
+			return {
+				contentType: ''
+			}
+		},
 		methods: {
-			navigateTo: function(subpage) {
-				if(this.$route.path != subpage) 
-				this.$router.push(subpage)
+			changeContent: function(name) {
+				this.contentType = name;
 			}
 		},
 		computed: {
@@ -88,16 +116,18 @@
 		justify-content: center;
 		cursor: pointer;
 		transition: all .3s ease;
+		opacity: .6;
 	}
 
 	div.contentGroup div#menu div.subopt:hover {
 		-webkit-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
 		-moz-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
 		box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
+		opacity: 1;
 	}
 
 	div.contentGroup div#menu div.subopt.active {
-		background-color: #ddd;
+		opacity: 1;
 		-webkit-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
 		-moz-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
 		box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
@@ -108,7 +138,7 @@
 	}
 
 	div.contentGroup div#menu div.subopt i {
-		font-size: 26px;
+		font-size: 22px;
 		margin: 18px 0 12px 0;
 		color: #444;
 	}
@@ -118,15 +148,23 @@
 	}
 
 	div.contentGroup div#menu div.subopt p {
-		font-size: 16px;
+		font-size: 14px;
 		color: #333;
 	}
 
 	div.contentGroup div#content {
-		width: 100%;
-		min-height: 300px;
+		width: calc(100% - 20px);
 		background-color: #fff;
 		border-radius: 10px;
 		margin: 20px 0 0 0;
+		padding: 10px 10px 20px 10px;
+	}
+
+	.fade-enter-active, .fade-leave-active {
+		transition: opacity .3s;
+	}
+	
+	.fade-enter, .fade-leave-to {
+		opacity: 0;
 	}
 </style>

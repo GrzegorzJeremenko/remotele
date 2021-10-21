@@ -25,6 +25,27 @@ Vue.use(Toast, {
   rtl: false
 });
 
+import VueHighlightJS from "vue-highlight.js";
+
+import javascript from "highlight.js/lib/languages/javascript";
+import xml from "highlight.js/lib/languages/xml";
+import css from "highlight.js/lib/languages/css";
+import cpp from "highlight.js/lib/languages/cpp";
+import python from "highlight.js/lib/languages/python";
+
+import "highlight.js/styles/dark.css";
+
+Vue.use(VueHighlightJS, {
+  languages: {
+    javascript,
+    xml,
+    css,
+    cpp,
+    python
+  }
+});
+
+
 new Vue({
   router,
   render: h => h(App)

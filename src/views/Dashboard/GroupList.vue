@@ -4,7 +4,7 @@
   </div>
   <div v-else class="groupList">
     <div v-if="groups !== null" id="groupsList">
-      <GroupItem
+      <ListItem
         v-for="(group, index) in groups"
         :group="group"
         :key="index"
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-  import GroupItem from '@/components/Dashboard/GroupItem.vue'
+  import ListItem from '@/components/Dashboard/Group/ListItem.vue'
 
   import NProgress from 'nprogress'
 
@@ -36,13 +36,19 @@
 
   export default {
     components: {
-      GroupItem
+      ListItem
     },
     data() {
       return {
         groups: null,
         load: false
       }
+    },
+    methods: {
+      navigateTo: function(subpage) {
+        if(this.$route.path != subpage) 
+        this.$router.push(subpage)
+      },
     },
     beforeMount: function() {
       NProgress.start()

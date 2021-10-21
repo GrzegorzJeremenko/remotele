@@ -1,6 +1,6 @@
 <template>
     <div
-        class="group"
+        class="listItem"
         v-on:click="navigateTo('/dashboard/classes/' + group._id)">
         <h1>{{ group.emoji }}</h1>
         <h2 v-bind:title="group.name">{{ shortName(group.name) }}</h2>
@@ -9,7 +9,7 @@
 
 <script>
     export default {
-        name: 'GroupItem',
+        name: 'ListItem',
         props: {
             group: Object
         },
@@ -29,7 +29,7 @@
 </script>
 
 <style scoped>
-    div.group {
+    div.listItem {
         width: 120px;
         height: 120px;
         background-color: #fff;
@@ -42,24 +42,24 @@
         transition: background-color .3s ease, box-shadow .3s ease;
     }
 
-    div.group:hover {
+    div.listItem:hover {
         -webkit-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
         -moz-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
         box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
     }
 
-    div.group:hover > h1 {
+    div.listItem:hover > h1 {
         opacity: 1;
     }
 
-    div.group h1 {
+    div.listItem h1 {
         font-size: 40px;
         margin: 18px 0 0 0;
         opacity: .7;
         transition: opacity .3s ease;
     }
 
-    div.group h2 {
+    div.listItem h2 {
         font-size: 18px;
         margin: 18px 0 0 0;
         color: #222;

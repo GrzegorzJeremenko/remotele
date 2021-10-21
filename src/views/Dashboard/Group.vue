@@ -3,14 +3,14 @@
         <i class="icon-spin1"></i>
     </div>
     <div v-else class="group">
-        <AboutGroup :group="group" />
-        <ContentGroup :group="group" />
+        <About :group="group" />
+        <Content :group="group" />
     </div>
 </template>
 
 <script>
-    import AboutGroup from '@/components/Dashboard/AboutGroup.vue'
-    import ContentGroup from '@/components/Dashboard/ContentGroup.vue'
+    import About from '@/components/Dashboard/Group/About.vue'
+    import Content from '@/components/Dashboard/Group/Content.vue'
 
     import NProgress from 'nprogress'
 
@@ -18,8 +18,8 @@
 
     export default {
         components: {
-            AboutGroup,
-            ContentGroup
+            About,
+            Content
         },
         data() {
             return { 

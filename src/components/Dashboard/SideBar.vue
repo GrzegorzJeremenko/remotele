@@ -6,7 +6,7 @@
 			v-if="$route.path === '/dashboard'"
 			:user="user" />
 		<GroupListProperties v-else-if="$route.path === '/dashboard/classes'"/>
-		<GroupProperties v-else-if="$route.name.substring(0, 5)== 'Klasa'"/>
+		<GroupProperties v-else-if="$route.name == 'Klasa'"/>
 	</transition>
   </div>
 </template>

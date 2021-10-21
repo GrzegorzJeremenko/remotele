@@ -52,29 +52,8 @@ const routes = [
       },
       {
         path: 'classes/:_id',
-        component: () => import('@/views/Dashboard/Group.vue'),
-        children: [
-          {
-            path: '',
-            name: 'Klasa - Start',
-            component: () => import('@/views/Dashboard/Topics.vue')
-          },
-          {
-            path: 'topics',
-            name: 'Klasa - Tematy',
-            component: () => import('@/views/Dashboard/Exams.vue')
-          },
-          {
-            path: 'exams',
-            name: 'Klasa - Testy',
-            component: () => import('@/views/Dashboard/Topics.vue')
-          },
-          {
-            path: 'todo',
-            name: 'Klasa - Notatki',
-            component: () => import('@/views/Dashboard/Topics.vue')
-          }
-        ]
+        name: 'Klasa',
+        component: () => import('@/views/Dashboard/Group.vue')
       },
       {
         path: 'topics',
@@ -90,7 +69,12 @@ const routes = [
         path: 'settings',
         name: 'Ustawienia',
         component: () => import('@/views/Dashboard/Settings.vue')
-      }
+      },
+      {
+        path: 'creator/:mode',
+        name: 'Kreator',
+        component: () => import('@/views/Dashboard/Creator.vue')
+      },
     ]
   }
 ]
