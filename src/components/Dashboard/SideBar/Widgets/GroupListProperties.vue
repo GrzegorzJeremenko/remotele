@@ -84,7 +84,7 @@
 <script>
     import EmojiPicker from 'vue-emoji-picker'
 
-    import { createGroup } from '@/services/classes.js'
+    import { createGroup } from '@/services/groups.js'
 
     export default {
         name: 'GroupListProperties',

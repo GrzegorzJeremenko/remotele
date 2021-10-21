@@ -48,12 +48,24 @@ const routes = [
       {
         path: 'classes',
         name: 'Klasy',
-        component: () => import('@/views/Dashboard/Classes.vue')
+        component: () => import('@/views/Dashboard/GroupList.vue')
       },
       {
         path: 'classes/:_id',
         name: 'Klasa',
-        component: () => import('@/views/Dashboard/Group.vue')
+        component: () => import('@/views/Dashboard/Group.vue'),
+        children: [
+          {
+            path: '',
+            name: 'Tematy',
+            component: () => import('@/views/Dashboard/Topics.vue')
+          },
+          {
+            path: 'testy',
+            name: 'Testy',
+            component: () => import('@/views/Dashboard/Topics.vue')
+          }
+        ]
       },
       {
         path: 'topics',
@@ -62,7 +74,7 @@ const routes = [
       },
       {
         path: 'exams',
-        name: 'Sprawdziany',
+        name: 'Testy',
         component: () => import('@/views/Dashboard/Exams.vue')
       },
       {

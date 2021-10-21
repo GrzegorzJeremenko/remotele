@@ -31,6 +31,32 @@ const getGroups = () => {
 	})
 }
 
+const getGroup = (_id) => {
+	const token = localStorage.getItem('token')
+
+	return new Promise((resolve, reject) => {
+		axios({
+			method: 'GET',
+			url: `${ config.serverAdress }/api/v1/groups/${_id}`,
+			headers: {
+                'Authorization': `Bearer ${ token }`
+            }
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
 const createGroup = (name, subject, emoji) => {
 	const token = localStorage.getItem('token')
 
@@ -64,4 +90,4 @@ const createGroup = (name, subject, emoji) => {
 	})
 }
 
-export { getGroups, createGroup }
+export { getGroups, createGroup, getGroup }

@@ -41,7 +41,7 @@ export default {
 					path: '/dashboard/topics',
 				},
 				{
-					name: 'Sprawdziany',
+					name: 'Testy',
 					icon: 'icon-check-outline',
 					path: '/dashboard/exams',
 				},

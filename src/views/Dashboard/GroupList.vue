@@ -1,8 +1,9 @@
 <template>
-  <div class="classes">
-    <div
-      v-if="groups.length > 0"
-      id="groupsList">
+  <div v-if="load === false" class="loading">
+    <i class="icon-spin1"></i>
+  </div>
+  <div v-else class="groupList">
+    <div v-if="groups !== null" id="groupsList">
       <GroupItem
         v-for="(group, index) in groups"
         :group="group"
@@ -18,9 +19,7 @@
       <div class="filler"></div>
       <div class="filler"></div>
     </div>
-    <div
-      v-else-if="load"
-      id="emptyList">
+    <div v-else id="emptyList">
       <i class="icon-eye"></i>
       <h1>Ups...</h1>
       <h2>Wygląda na to że nie stworzyłaś/eś jeszcze żadnej klasy.</h2>
@@ -33,7 +32,7 @@
 
   import NProgress from 'nprogress'
 
-  import { getGroups } from '@/services/classes.js'
+  import { getGroups } from '@/services/groups.js'
 
   export default {
     components: {
@@ -41,7 +40,7 @@
     },
     data() {
       return {
-        groups: [],
+        groups: null,
         load: false
       }
     },
@@ -54,13 +53,18 @@
         this.groups = res.data.groups
       })
       .catch((err) => {
-        console.log(err)
         switch(err.response.status) {
           case 404:
+            break
+          
+          case 401:
+            localStorage.clear()
+            this.navigateTo('/')
             break
 
           default:
             this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+            this.navigateTo('/')
             break
         }
       })
@@ -73,13 +77,33 @@
 </script>
 
 <style scoped>
-  div.classes {
+  @keyframes loadingSpin {
+    from { transform: rotate(0deg) }
+    to { transform: rotate(360deg) }
+  }
+
+  div.loading {
+    width: 100%;
+    height: calc(100% - 80px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  div.loading i {
+    font-size: 60px;
+    color: #aaa;
+    animation: loadingSpin 3s linear infinite;
+  }
+
+  div.groupList {
     width: 100%;
     display: flex;
     flex-direction: column;
   }
 
-  div.classes div#groupsList {
+  div.groupList div#groupsList {
     width: calc(100% - 80px);
     display: flex;
     flex-flow: row wrap;
@@ -88,12 +112,12 @@
     margin: 40px 40px 0 40px;
   }
 
-  div.classes div#groupsList div.filler {
+  div.groupList div#groupsList div.filler {
     width: 120px;
     height: 120px;
   }
 
-  div.classes div#emptyList {
+  div.groupList div#emptyList {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -101,18 +125,18 @@
     margin: 40px 0 0 0;
   }
 
-  div.classes div#emptyList i {
+  div.groupList div#emptyList i {
     font-size: 80px;
     color: #aaa;
   }
 
-  div.classes div#emptyList h1 {
+  div.groupList div#emptyList h1 {
     font-size: 40px;
     color: #666;
     margin: 15px 0 0 0;
   }
 
-  div.classes div#emptyList h2 {
+  div.groupList div#emptyList h2 {
     font-size: 25px;
     color: #666;
     margin: 15px 0 0 0;
