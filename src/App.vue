@@ -78,6 +78,11 @@
     border-left-color: #2ecc71 !important;
   }
 
+  code { 
+    border-radius: 10px;
+    line-height: 18px;
+  }
+
   .fade-enter-active, .fade-leave-active {
     transition: opacity .3s;
   }

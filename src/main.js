@@ -32,8 +32,9 @@ import xml from "highlight.js/lib/languages/xml";
 import css from "highlight.js/lib/languages/css";
 import cpp from "highlight.js/lib/languages/cpp";
 import python from "highlight.js/lib/languages/python";
+import php from "highlight.js/lib/languages/php";
 
-import "highlight.js/styles/dark.css";
+import "highlight.js/styles/base16/darcula.css";
 
 Vue.use(VueHighlightJS, {
   languages: {
@@ -41,7 +42,8 @@ Vue.use(VueHighlightJS, {
     xml,
     css,
     cpp,
-    python
+    python,
+    php
   }
 });
 

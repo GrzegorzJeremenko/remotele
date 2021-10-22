@@ -64,7 +64,8 @@ const createGroup = (name, subject, emoji) => {
         let body = {
             name,
             emoji,
-            subject
+            subject,
+			description: ''
         }
 
 		axios({
@@ -90,4 +91,62 @@ const createGroup = (name, subject, emoji) => {
 	})
 }
 
-export { getGroups, createGroup, getGroup }
+const deleteTodo = (todo_id, group_id) => {
+	const token = localStorage.getItem('token')
+
+	return new Promise((resolve, reject) => {
+
+		axios({
+			method: 'DELETE',
+			url: `${ config.serverAdress }/api/v1/groups/${ group_id }/todos/${ todo_id }`,
+			headers: {
+                'Authorization': `Bearer ${ token }`
+            }
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
+const addTodo = (text, group_id) => {
+	const token = localStorage.getItem('token')
+
+	return new Promise((resolve, reject) => {
+		let body = {
+			text
+		}
+
+		axios({
+			method: 'POST',
+			url: `${ config.serverAdress }/api/v1/groups/${ group_id }/todos`,
+			headers: {
+                'Authorization': `Bearer ${ token }`
+            },
+            data: body
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
+export { getGroups, createGroup, getGroup, deleteTodo, addTodo }

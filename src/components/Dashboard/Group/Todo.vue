@@ -8,36 +8,74 @@
                     type="text"
                     id="content"
                     placeholder="Wpisz treść notatkę"
-                    ref="content">
+                    ref="textTodo">
 
                 <input
                     type="submit"
                     value="Dodaj"
-                    v-on:click="addTask()">
+                    v-on:click="addTodo()">
             </div>
         </form>
-        <p v-if="group.todo.length === 0">Brak notatek.</p>
+        <p v-if="group.todos.length === 0">Brak notatek.</p>
         <ul v-else>
             <li
-                v-for="(task, index) in todo"
+                v-for="(todo, index) in group.todos"
                 :key="index">
-                <p>{{ task.text }}</p>
+                <p>{{ todo.text }}</p>
                 <i
                     class="icon-cancel"
-                    v-on:click="deleteTask(task._id)"></i>
+                    v-on:click="deleteTodo(todo._id)"></i>
             </li>
         </ul>
     </div>
 </template>
 
 <script>
+    import { addTodo, deleteTodo } from '@/services/groups.js'
+
+    import NProgress from 'nprogress'
+
     export default {
         name: 'Todo',
         props: {
             group: Object
         },
         methods: {
+            addTodo: function() {
+                let textTodo = this.$refs.textTodo.value;
 
+                NProgress.start()
+                NProgress.set(0.1)
+
+                addTodo(textTodo, this.group._id)
+                .then((res) => {
+                    this.group.todos.push({
+                        _id: res.data.todo._id,
+                        text: textTodo
+                    })
+
+                    this.$refs.textTodo.value = ''
+                })
+                .catch(() => {
+                    this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                })
+                .finally(() => setTimeout(() => NProgress.done(), 500))
+            },
+            deleteTodo: function(todo_id) {
+                NProgress.start()
+                NProgress.set(0.1)
+
+                deleteTodo(todo_id, this.group._id)
+                .then(() => {
+                    this.group.todos = this.group.todos.filter(function(todo) {
+                    return todo._id !== todo_id
+                })
+                })
+                .catch(() => {
+                    this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                })
+                .finally(() => setTimeout(() => NProgress.done(), 500))
+            }
         }
     }
 </script>
@@ -77,6 +115,7 @@
 
     div.todo ul li p {
         font-size: 14px;
+        padding: 0;
         text-align: justify;
     }
 
