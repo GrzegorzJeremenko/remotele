@@ -15,7 +15,6 @@
                 :key="index">
                 <TextComp
                     v-if="element.type === 'text'"
-                    :bus="bus"
                     :data="element.data"
                     :preview="preview"/>
 
@@ -34,8 +33,6 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-
     import NProgress from 'nprogress'
 
     import { getTopic, updateTopic } from '@/services/topics.js'
@@ -85,13 +82,12 @@
 
                 this.intervalChange = setInterval(this.change, 100)
 
-                this.bus.$emit('changed')
+                
 
                 this.load = true
             })
-        },
-        mounted: function() {
-            this.$root.$on('addModule', (res) => {
+
+            this.$root.$on('creatorProp-creator-addModule', (res) => {
                 this.addModule(res)
             })
         },
@@ -101,7 +97,7 @@
         methods: {
             addModule: function(res) {
                 this.topic.components.push(res)
-                this.$refs.creator.scrollTop = 1000;
+                this.$root.$emit('creator-dashboard-scrollDown')
             },
             change: function() {
                 if(JSON.stringify(this.topic.components) !== this.lastComponents) {
@@ -110,7 +106,6 @@
                     this.lastChange = Date.now()
                     this.autosave = true
 
-                    this.bus.$emit('changed')
                 } else if(this.autosave && ((Date.now() - this.lastChange) / 1000) > 10) 
                     this.save()
             },
@@ -141,10 +136,9 @@
         },
         data() {
             return {
-                preview: true,
+                preview: false,
                 autosave: false,
                 lastChange: Date,
-                bus: new Vue(),
                 intervalChange: Object,
                 lastComponents: String,
                 topic: Object,

@@ -33,7 +33,7 @@
 			this.user = JSON.parse(localStorage.getItem('user'))
 		},
 		mounted: function() {
-			this.$root.$on('addModule', () => {
+			this.$root.$on('creator-dashboard-scrollDown', () => {
                 setTimeout(() => {this.$refs.inside.scrollTop = this.$refs.inside.scrollHeight}, 100)
             })
 		}

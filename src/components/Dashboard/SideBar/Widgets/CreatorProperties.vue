@@ -4,7 +4,7 @@
         <ul>
             <li
                 v-for="(element, index) in elements"
-                v-on:click="$root.$emit('addModule', element.template)"
+                v-on:click="$root.$emit('creatorProp-creator-addModule', element.template)"
                 :key="index">
                 <i :class="element.icon"></i>
                 <p>{{ element.name }}</p>

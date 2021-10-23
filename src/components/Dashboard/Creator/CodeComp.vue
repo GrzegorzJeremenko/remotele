@@ -1,5 +1,13 @@
 <template>
     <div v-if="!preview" class="codeCompEdit">
+        <div class="bar">
+            <p>Kod</p>
+            <div class="list">
+                <i class="icon-down-open"></i>
+                <i class="icon-up-open"></i>
+                <i class="icon-cancel"></i>
+            </div>
+        </div>
         <form>
             <label for="content">Kod źródłowy:</label>
             <textarea id="content" placeholder="Wpisz kod źródłowy" v-model="dataEdit.content" />
@@ -36,6 +44,38 @@
 </script>
 
 <style scoped>
+    div.codeCompEdit div.bar {
+        width: calc(100% + 40px);
+        margin: -20px -20px 20px -20px;
+        background-color: #2ecc71;
+        border-radius: 20px 20px 0 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        height: 30px;
+    }
+
+    div.codeCompEdit div.bar p {
+        color: #fff;
+        margin: 0 0 0 20px;
+        font-size: 18px;
+    }
+
+    div.codeCompEdit div.bar div.list {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: auto;
+        margin: 0 15px 0 0;
+    }
+
+    div.codeCompEdit div.bar div.list i {
+        color: #fff;
+        font-size: 18px;
+        margin: 0 5px 0 5px;
+    }
+
     div.codeCompEdit {
         padding: 20px;
     }
