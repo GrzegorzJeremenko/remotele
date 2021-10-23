@@ -1,13 +1,13 @@
 const config = require('@/services/config.js')
 const axios = require('axios')
 
-const getGroups = () => {
+const getTopics = () => {
 	const token = localStorage.getItem('token')
 
 	return new Promise((resolve, reject) => {
 		axios({
 			method: 'GET',
-			url: `${ config.serverAdress }/api/v1/groups`,
+			url: `${ config.serverAdress }/api/v1/topics`,
 			headers: {
                 'Authorization': `Bearer ${ token }`
             }
@@ -31,45 +31,34 @@ const getGroups = () => {
 	})
 }
 
-const getGroup = (_id) => {
-	const token = localStorage.getItem('token')
-
-	return new Promise((resolve, reject) => {
-		axios({
-			method: 'GET',
-			url: `${ config.serverAdress }/api/v1/groups/${_id}`,
-			headers: {
-                'Authorization': `Bearer ${ token }`
-            }
-		})
-		.then((res) => {
-			switch(res.status) {
-				case 200:
-					resolve(res)
-					break
-
-				default:
-					reject()
-					break
-			}
-		})
-		.catch((err) => reject(err))
-	})
-}
-
-const createGroup = (name, subject, emoji) => {
+const createTopic = (name, description) => {
 	const token = localStorage.getItem('token')
 
 	return new Promise((resolve, reject) => {
         let body = {
             name,
-            emoji,
-            subject
+            description,
+            components: [
+                {
+                    type: 'text',
+                    data: {
+                        content: name,
+                        font: {
+                            size: '30',
+                            color: '#000000',
+                            bold: true,
+                            italic: false,
+                            underline: false,
+                        },
+                        align: 'justify'
+                    }
+                }
+            ]
         }
 
 		axios({
 			method: 'POST',
-			url: `${ config.serverAdress }/api/v1/groups`,
+			url: `${ config.serverAdress }/api/v1/topics`,
 			headers: {
                 'Authorization': `Bearer ${ token }`
             },
@@ -90,14 +79,13 @@ const createGroup = (name, subject, emoji) => {
 	})
 }
 
-const deleteTodo = (todo_id, group_id) => {
+const getTopic = (_id) => {
 	const token = localStorage.getItem('token')
 
 	return new Promise((resolve, reject) => {
-
 		axios({
-			method: 'DELETE',
-			url: `${ config.serverAdress }/api/v1/groups/${ group_id }/todos/${ todo_id }`,
+			method: 'GET',
+			url: `${ config.serverAdress }/api/v1/topics/${ _id }`,
 			headers: {
                 'Authorization': `Bearer ${ token }`
             }
@@ -106,6 +94,10 @@ const deleteTodo = (todo_id, group_id) => {
 			switch(res.status) {
 				case 200:
 					resolve(res)
+					break
+
+				case 404:
+					reject(res)
 					break
 
 				default:
@@ -117,17 +109,18 @@ const deleteTodo = (todo_id, group_id) => {
 	})
 }
 
-const addTodo = (text, group_id) => {
+const updateTopic = (_id, topic) => {
 	const token = localStorage.getItem('token')
+    let body = {
+        components: topic.components,
+        name: topic.name,
+        description: topic.description
+    }
 
 	return new Promise((resolve, reject) => {
-		let body = {
-			text
-		}
-
 		axios({
-			method: 'POST',
-			url: `${ config.serverAdress }/api/v1/groups/${ group_id }/todos`,
+			method: 'PATCH',
+			url: `${ config.serverAdress }/api/v1/topics/${ _id }`,
 			headers: {
                 'Authorization': `Bearer ${ token }`
             },
@@ -148,4 +141,4 @@ const addTodo = (text, group_id) => {
 	})
 }
 
-export { getGroups, createGroup, getGroup, deleteTodo, addTodo }
+export { getTopics, createTopic, getTopic, updateTopic }

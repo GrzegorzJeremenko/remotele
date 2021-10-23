@@ -36,6 +36,10 @@
 </script>
 
 <style scoped>
+    div.codeCompEdit {
+        padding: 20px;
+    }
+
     div.codeCompEdit form {
         display: flex;
         flex-direction: column;

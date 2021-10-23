@@ -1,22 +1,31 @@
 <template>
-    <div class="creator">
+    <div v-if="load === false" class="loading">
+        <i class="icon-spin1"></i>
+    </div>
+    <div v-else class="creator" ref="creator">
         <form action="javascript: void(0);">
             <input type="submit" v-on:click="preview = !preview" :value="preview ? 'Tryb edycji' : 'Tryb podglądu'">
 
             <input type="submit" v-on:click="save()" :disabled="!autosave" :value="autosave ? 'Zapisz' : 'Zapisano'">
         </form>
-        <ul>
+        <ul :style="{ backgroundColor: preview ? '#fff' : '#ffffff00', padding: preview ? '20px' : 'none' }">
             <li
-                v-for="(element, index) in elements"
-                :style="{ backgroundColor: preview ? '#eee' : '#fff', margin: preview ? '0' : '0 0 20px 0'}"
+                v-for="(element, index) in topic.components"
+                :style="{ backgroundColor: preview ? '#ffffff00' : '#fff' }"
                 :key="index">
                 <TextComp
                     v-if="element.type === 'text'"
+                    :bus="bus"
                     :data="element.data"
                     :preview="preview"/>
 
                 <CodeComp
                     v-if="element.type === 'code'"
+                    :data="element.data"
+                    :preview="preview"/>
+
+                <QueryComp
+                    v-if="element.type === 'query'"
                     :data="element.data"
                     :preview="preview"/>
             </li>
@@ -25,129 +34,173 @@
 </template>
 
 <script>
+    import Vue from 'vue'
+
+    import NProgress from 'nprogress'
+
+    import { getTopic, updateTopic } from '@/services/topics.js'
+
     import TextComp from '@/components/Dashboard/Creator/TextComp.vue'
     import CodeComp from '@/components/Dashboard/Creator/CodeComp.vue'
+    import QueryComp from '@/components/Dashboard/Creator/QueryComp.vue'
 
     export default {
         name: 'Creator',
         components: {
             TextComp,
-            CodeComp
+            CodeComp,
+            QueryComp
         },
         beforeMount: function() {
-            this.lastElements = JSON.stringify(this.elements)
+            NProgress.start()
+            NProgress.set(0.1)
 
-            this.intervalChange = setInterval(this.change, 1000)
-            this.intervalSave = setInterval(this.save, 1000 * 10)
+            getTopic(this.$route.params._id)
+            .then((res) => {
+                this.topic = res.data.topic
+            })
+            .catch((err) => {
+                switch(err.response.status) {
+                case 404:
+                    this.$toast.error("Ups... Nie znaleziono tematu")
+
+                    this.navigateTo('/dashboard')
+                    break
+                
+                case 401:
+                    localStorage.clear()
+                    this.navigateTo('/')
+                    break
+
+                default:
+                    this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                    this.navigateTo('/dashboard')
+                    break
+                }
+            })
+            .finally(() => {
+                setTimeout(() => NProgress.done(), 500)
+
+                this.lastComponents = JSON.stringify(this.topic.components)
+
+                this.intervalChange = setInterval(this.change, 100)
+
+                this.bus.$emit('changed')
+
+                this.load = true
+            })
+        },
+        mounted: function() {
+            this.$root.$on('addModule', (res) => {
+                this.addModule(res)
+            })
         },
         destroyed: function() {
             clearInterval(this.intervalChange)
-            clearInterval(this.intervalSave)
         },
         methods: {
+            addModule: function(res) {
+                this.topic.components.push(res)
+                this.$refs.creator.scrollTop = 1000;
+            },
             change: function() {
-                if(JSON.stringify(this.elements) !== this.lastElements) {
-                    this.lastElements = JSON.stringify(this.elements)
+                if(JSON.stringify(this.topic.components) !== this.lastComponents) {
+                    this.lastComponents = JSON.stringify(this.topic.components)
+
+                    this.lastChange = Date.now()
                     this.autosave = true
-                }
+
+                    this.bus.$emit('changed')
+                } else if(this.autosave && ((Date.now() - this.lastChange) / 1000) > 10) 
+                    this.save()
             },
             save: function() {
-                if(this.autosave && JSON.stringify(this.elements) === this.lastElements) {
-                    this.autosave = false
+                this.lastChange = Date.now()
 
-                    this.$toast("Zapisano")
-                }
+                updateTopic(this.$route.params._id, this.topic)
+                .then(() => {
+                    this.$toast("Zapisano.")
+                    this.autosave = false
+                })
+                .catch((err) => {
+                    switch(err.response.status) {
+                        case 401:
+                            localStorage.clear()
+                            this.navigateTo('/')
+                            break
+
+                        default:
+                            this.$toast("Zapisano.")
+                            this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+
+                            this.lastChange = Date.now()
+                            break
+                    }
+                })
             }
         },
         data() {
             return {
-                preview: false,
+                preview: true,
                 autosave: false,
+                lastChange: Date,
+                bus: new Vue(),
                 intervalChange: Object,
-                intervalSave: Object,
-                lastElements: String,
-                elements: [
-                    {
-                        type: 'text',
-                        data: {
-                            _id: 0,
-                            content: 'Operator %',
-                            font: {
-                                size: '30',
-                                color: '#000000',
-                                bold: true,
-                                italic: false,
-                                underline: true,
-                            },
-                            align: 'justify'
-                        }
-                    },
-                    {
-                        type: 'text',
-                        data: {
-                            _id: 1,
-                            content: 'Do tej pory nie opisałem jeszcze jednego dość przydatnego operatora w języku Java. Mianowicie %. Operator % zwraca resztę z dzielenia liczb. Najłatwiej będzie to zrozumieć na przykładzie',
-                            font: {
-                                size: '16',
-                                color: '#000000',
-                                bold: false,
-                                italic: false,
-                                underline: false,
-                            },
-                            align: 'justify'
-                        }
-                    },
-                    {
-                        type: 'code',
-                        data: {
-                            _id: 2,
-                            content: '4 % 3 == 1; // bo 3 mieści się raz w 4 i zostaje 1 reszty\r\n8 % 3 == 2; // bo 3 mieści się dwa razy w 8 i zostaje 2 reszty\r\n3 % 4 == 3; // bo 4 nie mieści się w 3 i zostaje 3 reszty\r\n15 % 5 == 0; // bo 5 mieści się trzy razy w 15 i zostaje 0 reszty',
-                            lang: 'cpp'
-                        }
-                    },
-                    {
-                        type: 'text',
-                        data: {
-                            _id: 3,
-                            content: 'Jeśli chcielibyśmy zapisać działanie tego operatora przy pomocy równania matematycznego moglibyśmy użyć następującego wzoru:',
-                            font: {
-                                size: '16',
-                                color: '#000000',
-                                bold: false,
-                                italic: true,
-                                underline: false,
-                            },
-                            align: 'justify'
-                        }
-                    }
-                ]
+                lastComponents: String,
+                topic: Object,
+                load: false,
             }
         }
     }
 </script>
 
 <style scoped>
+    @keyframes loadingSpin {
+        from { transform: rotate(0deg) }
+        to { transform: rotate(360deg) }
+    }
+
+    div.loading {
+        width: 100%;
+        height: calc(100% - 80px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    div.loading i {
+        font-size: 60px;
+        color: #aaa;
+        animation: loadingSpin 3s linear infinite;
+    }
+
     div.creator {
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin: 0 0 40px 0;
     }
 
     div.creator ul {
-        width: 100%;
+        width: 80%;
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: 40px 0 0 0;
+        border-radius: 20px;
     }
 
     div.creator ul li {
-        width: 80%;
-        padding: 20px;
+        width: 100%;
         background-color: #fff;
         border-radius: 20px;
         margin: 0 0 20px 0;
         transition: all 1s ease;
+    }
+
+    div.creator ul li:last-child {
+        margin: 0;
     }
 
     div.creator form {
@@ -172,7 +225,8 @@
     }
 
     div.creator form input[type=submit]:disabled {
-        background-color: #3498db;
+        background-color: #3498db !important;
+        cursor: default;
     }
 
     div.creator form input[type=submit]:hover {

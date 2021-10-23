@@ -71,7 +71,7 @@ const routes = [
         component: () => import('@/views/Dashboard/Settings.vue')
       },
       {
-        path: 'creator/:mode',
+        path: 'creator/:mode/:_id',
         name: 'Kreator',
         component: () => import('@/views/Dashboard/Creator.vue')
       },

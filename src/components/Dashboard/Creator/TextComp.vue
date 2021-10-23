@@ -1,11 +1,12 @@
 <template>
-    <div v-if="!preview" class="textCompEdit">
+    <div v-if="!preview" class="textCompEdit" draggable="true">
         <form>
             <label for="content">Tekst:</label>
             <textarea
                 id="content"
                 placeholder="Wpisz tekst"
-                v-model="dataEdit.content" />
+                v-model="dataEdit.content"
+                :style="styleText" />
 
             <label for="size">Wielkość tekstu:</label>
             <select
@@ -19,6 +20,27 @@
             </select>
 
             <label>Wyrównanie tekstu:</label>
+            <div class="list">
+                <i
+                    class="icon-align-left"
+                    :class="dataEdit.align === 'left' ? 'active' : ''"
+                    v-on:click="dataEdit.align = 'left'"></i>
+
+                <i
+                    class="icon-align-center"
+                    :class="dataEdit.align === 'center' ? 'active' : ''"
+                    v-on:click="dataEdit.align = 'center'"></i>
+
+                <i
+                    class="icon-align-right"
+                    :class="dataEdit.align === 'right' ? 'active' : ''"
+                    v-on:click="dataEdit.align = 'right'"></i>
+
+                <i
+                    class="icon-align-justify"
+                    :class="dataEdit.align === 'justify' ? 'active' : ''"
+                    v-on:click="dataEdit.align = 'justify'"></i>
+            </div>
 
             <label for="color">Kolor tekstu:</label>
             <input
@@ -28,9 +50,18 @@
 
             <label>Styl tekstu:</label>
             <div class="list">
-                <i class="icon-bold"></i>
-                <i class="icon-italic"></i>
-                <i class="icon-underline"></i>
+                <i
+                    class="icon-bold"
+                    :class="dataEdit.font.bold ? 'active' : ''"
+                    v-on:click="dataEdit.font.bold = !dataEdit.font.bold"></i>
+                <i
+                    class="icon-italic"
+                    :class="dataEdit.font.italic ? 'active' : ''"
+                    v-on:click="dataEdit.font.italic = !dataEdit.font.italic"></i>
+                <i
+                    class="icon-underline"
+                    :class="dataEdit.font.underline ? 'active' : ''"
+                    v-on:click="dataEdit.font.underline = !dataEdit.font.underline"></i>
             </div>
         </form>
     </div>
@@ -47,7 +78,13 @@
         name: 'TextComp',
         props: {
             data: Object,
-            preview: Boolean
+            preview: Boolean,
+            bus: Object
+        },
+        created() {
+            this.bus.$on('changed', () => {
+                this.countStyle()
+            });
         },
         data() {
             return {
@@ -65,6 +102,11 @@
         },
         watch: {
             preview: function() {
+                this.countStyle()
+            }
+        },
+        methods: {
+            countStyle: function() {
                 this.styleText.fontSize = this.dataEdit.font.size + 'px'
                 this.styleText.lineHeight = Math.floor(this.dataEdit.font.size * 1.3) + 'px'
 
@@ -83,6 +125,10 @@
 </script>
 
 <style scoped>
+    div.textCompEdit {
+        padding: 20px;
+    }
+
     div.textCompEdit form {
         display: flex;
         flex-direction: column;
@@ -140,13 +186,25 @@
     }
 
     div.textCompEdit form div.list i {
-        font-size: 18px;
+        font-size: 22px;
         margin: 0 5px 0 0;
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         text-align: center;
-        line-height: 30px;
+        line-height: 35px;
         border-radius: 5px;
         border: 1px solid #ccc;
+        cursor: pointer;
+        transition: all .3s ease;
+    }
+
+    div.textCompEdit form div.list i:hover {
+        background-color: #2ecc71;
+        color: #fff;
+    }
+
+    div.textCompEdit form div.list i.active {
+        background-color: #2ecc71;
+        color: #fff;
     }
 </style>

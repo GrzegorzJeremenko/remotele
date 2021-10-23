@@ -6,7 +6,9 @@
 			v-if="$route.path === '/dashboard'"
 			:user="user" />
 		<GroupListProperties v-else-if="$route.path === '/dashboard/classes'"/>
+		<TopicsProperties v-else-if="$route.path === '/dashboard/topics'"/>
 		<GroupProperties v-else-if="$route.name == 'Klasa'"/>
+		<CreatorProperties v-else-if="$route.name == 'Kreator'"/>
 	</transition>
   </div>
 </template>
@@ -15,7 +17,9 @@
 	import Account from "@/components/Dashboard/SideBar/Account.vue"
 	import LessonPlan from "@/components/Dashboard/SideBar/Widgets/LessonPlan.vue"
 	import GroupListProperties from "@/components/Dashboard/SideBar/Widgets/GroupListProperties.vue"
+	import TopicsProperties from "@/components/Dashboard/SideBar/Widgets/TopicsProperties.vue"
 	import GroupProperties from "@/components/Dashboard/SideBar/Widgets/GroupProperties.vue"
+	import CreatorProperties from "@/components/Dashboard/SideBar/Widgets/CreatorProperties.vue"
 
 	export default {
 		name: 'Sidebar',
@@ -26,7 +30,9 @@
 			Account,
 			LessonPlan,
 			GroupListProperties,
-			GroupProperties
+			TopicsProperties,
+			GroupProperties,
+			CreatorProperties
 		}
 	}
 </script>

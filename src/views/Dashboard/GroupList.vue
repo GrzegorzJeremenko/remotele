@@ -7,8 +7,7 @@
       <ListItem
         v-for="(group, index) in groups"
         :group="group"
-        :key="index"
-        />
+        :key="index" />
       <div class="filler"></div>
       <div class="filler"></div>
       <div class="filler"></div>
@@ -70,7 +69,7 @@
 
           default:
             this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
-            this.navigateTo('/')
+            this.navigateTo('/dashboard')
             break
         }
       })

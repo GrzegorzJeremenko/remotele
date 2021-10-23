@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard">
 		<Menu :user="user" />
-		<div id="inside">
+		<div id="inside" ref="inside">
 			<TopBar />
 			<transition name="fade" mode="out-in">
 				<router-view/>
@@ -31,6 +31,11 @@
 		},
 		beforeMount: function() {
 			this.user = JSON.parse(localStorage.getItem('user'))
+		},
+		mounted: function() {
+			this.$root.$on('addModule', () => {
+                setTimeout(() => {this.$refs.inside.scrollTop = this.$refs.inside.scrollHeight}, 100)
+            })
 		}
 	}
 </script>

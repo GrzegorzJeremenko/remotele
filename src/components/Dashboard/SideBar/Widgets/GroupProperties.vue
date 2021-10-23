@@ -206,37 +206,37 @@
                 let groupName = this.$refs.groupName.value
                 let groupSubject = this.$refs.groupSubject.value
 
-                this.groupName = this.groupSubject = false
+                this.incorrectGroupName = this.incorrectGroupSubject = false
 
                 let err = false;
 
                 if(groupName == "" && groupSubject == "" && this.selectedEmoji == "") {
                     this.$toast.error("Proszę wypełnić pola.")
-                    this.groupName = this.groupSubject = true
+                    this.incorrectGroupName = this.incorrectGroupSubject = true
 
                     return true
                 }
 
                 if(groupName == "") {
                     this.$toast.error("Pole 'Nazwa klasy' nie może być puste.")
-                    this.groupName = true
+                    this.incorrectGroupName = true
 
                     err = true
                 } else if(!this.validName(groupName)) {
                     this.$toast.error("Podana nazwa klasy zawiera niedozwolone znaki\r\nlub jest za krótka.")
-                    this.groupName = true
+                    this.incorrectGroupName = true
 
                     err = true
                 }
 
                 if(groupSubject == "") {
                     this.$toast.error("Pole 'Nazwa przedmiotu' nie może być puste.")
-                    this.groupSubject = true
+                    this.incorrectGroupSubject = true
 
                     err = true
                 } else if(!this.validSubject(groupSubject)) {
                     this.$toast.error("Podana nazwa przedmiotu zawiera niedozwolone znaki\r\nlub jest za krótka.")
-                    this.groupSubject = true
+                    this.incorrectGroupSubject = true
 
                     err = true
                 }
