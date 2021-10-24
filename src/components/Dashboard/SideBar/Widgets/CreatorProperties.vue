@@ -49,7 +49,11 @@
                     },
                     {
                         icon: 'icon-superscript',
-                        name: 'Funkcje'
+                        name: 'Funkcje',
+                        template: {
+                            type: 'math',
+                            data: []
+                        }
                     }
                 ]
             }

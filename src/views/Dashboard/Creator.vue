@@ -27,6 +27,10 @@
                     v-if="element.type === 'query'"
                     :data="element.data"
                     :preview="preview"/>
+                <MathComp
+                    v-if="element.type === 'math'"
+                    :data="element.data"
+                    :preview="preview"/>
             </li>
         </ul>
     </div>
@@ -40,13 +44,15 @@
     import TextComp from '@/components/Dashboard/Creator/TextComp.vue'
     import CodeComp from '@/components/Dashboard/Creator/CodeComp.vue'
     import QueryComp from '@/components/Dashboard/Creator/QueryComp.vue'
+    import MathComp from '@/components/Dashboard/Creator/MathComp.vue'
 
     export default {
         name: 'Creator',
         components: {
             TextComp,
             CodeComp,
-            QueryComp
+            QueryComp,
+            MathComp
         },
         beforeMount: function() {
             NProgress.start()
