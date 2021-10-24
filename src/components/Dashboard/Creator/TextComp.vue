@@ -1,13 +1,5 @@
 <template>
     <div v-if="!preview" class="textCompEdit">
-        <div class="bar">
-            <p>Tekst</p>
-            <div class="list">
-                <i class="icon-down-open"></i>
-                <i class="icon-up-open"></i>
-                <i class="icon-cancel"></i>
-            </div>
-        </div>
         <form>
             <label for="content">Tekst:</label>
             <textarea
@@ -90,6 +82,11 @@
         },
         mounted: function() {
             this.countStyle()
+
+            this.$root.$on('creator-components-update', () => {
+                this.dataEdit = this.data
+                this.countStyle()
+            })
         },
         data() {
             return {
@@ -130,38 +127,6 @@
 </script>
 
 <style scoped>
-    div.textCompEdit div.bar {
-        width: calc(100% + 40px);
-        margin: -20px -20px 20px -20px;
-        background-color: #2ecc71;
-        border-radius: 20px 20px 0 0;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        height: 30px;
-    }
-
-    div.textCompEdit div.bar p {
-        color: #fff;
-        margin: 0 0 0 20px;
-        font-size: 18px;
-    }
-
-    div.textCompEdit div.bar div.list {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        width: auto;
-        margin: 0 15px 0 0;
-    }
-
-    div.textCompEdit div.bar div.list i {
-        color: #fff;
-        font-size: 18px;
-        margin: 0 5px 0 5px;
-    }
-
     div.textCompEdit {
         padding: 20px;
     }

@@ -141,4 +141,32 @@ const updateTopic = (_id, topic) => {
 	})
 }
 
-export { getTopics, createTopic, getTopic, updateTopic }
+const deleteTopic = (topic) => {
+	const token = localStorage.getItem('token')
+	let body = topic
+
+	return new Promise((resolve, reject) => {
+		axios({
+			method: 'DELETE',
+			url: `${ config.serverAdress }/api/v1/topics`,
+			headers: {
+                'Authorization': `Bearer ${ token }`
+            },
+			data: body
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
+export { getTopics, createTopic, getTopic, updateTopic, deleteTopic }

@@ -49,7 +49,7 @@
                     },
                     {
                         icon: 'icon-superscript',
-                        name: 'Funkcje',
+                        name: 'Wykres',
                         template: {
                             type: 'math',
                             data: []

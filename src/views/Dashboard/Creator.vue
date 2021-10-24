@@ -4,16 +4,34 @@
     </div>
     <div v-else class="creator" ref="creator">
         <form action="javascript: void(0);">
-            <input type="submit" v-on:click="preview = !preview" :value="preview ? 'Tryb edycji' : 'Tryb podglądu'">
+            <input
+                type="submit"
+                v-on:click="preview = !preview"
+                :value="preview ? 'Tryb edycji' : 'Tryb podglądu'">
 
-            <input type="submit" v-on:click="save()" :disabled="!autosave" :value="autosave ? 'Zapisz' : 'Zapisano'">
+            <input
+                type="submit"
+                v-on:click="save()"
+                :disabled="!autosave"
+                :value="autosave ? 'Zapisz' : 'Zapisano'">
+
+            <input
+                type="submit"
+                v-on:click="deleteTopic()"
+                class="delete"
+                value="Usuń temat">
         </form>
         <ul :style="{ backgroundColor: preview ? '#fff' : '#ffffff00', padding: preview ? '20px' : 'none' }">
             <li
                 v-for="(element, index) in topic.components"
                 :style="{ backgroundColor: preview ? '#ffffff00' : '#fff' }"
                 :key="index">
-                <div>testw</div>
+                <Bar
+                    v-if="!preview"
+                    :element="element"
+                    :index="index"
+                    :max="topic.components.length" />
+
                 <TextComp
                     v-if="element.type === 'text'"
                     :data="element.data"
@@ -28,6 +46,7 @@
                     v-if="element.type === 'query'"
                     :data="element.data"
                     :preview="preview"/>
+
                 <MathComp
                     v-if="element.type === 'math'"
                     :data="element.data"
@@ -40,12 +59,14 @@
 <script>
     import NProgress from 'nprogress'
 
-    import { getTopic, updateTopic } from '@/services/topics.js'
+    import { getTopic, updateTopic, deleteTopic } from '@/services/topics.js'
 
     import TextComp from '@/components/Dashboard/Creator/TextComp.vue'
     import CodeComp from '@/components/Dashboard/Creator/CodeComp.vue'
     import QueryComp from '@/components/Dashboard/Creator/QueryComp.vue'
     import MathComp from '@/components/Dashboard/Creator/MathComp.vue'
+
+    import Bar from '@/components/Dashboard/Creator/Bar.vue'
 
     export default {
         name: 'Creator',
@@ -53,7 +74,8 @@
             TextComp,
             CodeComp,
             QueryComp,
-            MathComp
+            MathComp,
+            Bar
         },
         beforeMount: function() {
             NProgress.start()
@@ -89,26 +111,67 @@
 
                 this.intervalChange = setInterval(this.change, 100)
 
-                
-
                 this.load = true
             })
 
-            this.$root.$on('creatorProp-creator-addModule', (res) => {
-                this.addModule(res)
+            this.$root.$on('creatorProp-creator-addModule', (template) => {
+                this.addModule(JSON.stringify(template))
+            })
+
+            this.$root.$on('bar-creator-delete', (element) => {
+                this.deleteModule(element)
+            })
+
+            this.$root.$on('bar-creator-down', (index) => {
+                this.moveModule(index, index + 1)
+            })
+
+            this.$root.$on('bar-creator-up', (index) => {
+                this.moveModule(index, index - 1)
             })
         },
         destroyed: function() {
             clearInterval(this.intervalChange)
         },
         methods: {
-            addModule: function(res) {
-                this.topic.components.push(res)
+            navigateTo: function(subpage) {
+                if(this.$route.path != subpage) 
+                this.$router.push(subpage)
+            },
+            addModule: function(template) {
+                this.topic.components.push(JSON.parse(template))
                 this.$root.$emit('creator-dashboard-scrollDown')
+
+                setTimeout(() => {
+                    this.$root.$emit('creator-components-update')
+                }, 100)
+            },
+            deleteModule: function(element) {
+                this.topic.components = this.topic.components.filter(function(component) {
+                    return JSON.stringify(component) !== JSON.stringify(element)
+                })
+
+                setTimeout(() => {
+                    this.$root.$emit('creator-components-update')
+                }, 100)
+            },
+            moveModule: function(index, nextIndex) {
+                let nextComponent = this.topic.components[nextIndex]
+
+                this.topic.components[nextIndex] = this.topic.components[index]
+                this.topic.components[index] = nextComponent
+
+                setTimeout(() => {
+                    this.$root.$emit('creator-components-update')
+                    this.preview = true
+                    this.preview = false
+                }, 100)
             },
             change: function() {
                 if(JSON.stringify(this.topic.components) !== this.lastComponents) {
                     this.lastComponents = JSON.stringify(this.topic.components)
+
+                    this.$root.$emit('creator-components-update')
 
                     this.lastChange = Date.now()
                     this.autosave = true
@@ -138,6 +201,29 @@
                             this.lastChange = Date.now()
                             break
                     }
+                })
+            },
+            deleteTopic: function() {
+                deleteTopic(this.topic)
+                .then(() => {
+                    this.$toast("Temat został usunięty.")
+                    this.navigateTo('/dashboard/topics')
+                })
+                .catch((err) => {
+                    switch(err.response.status) {
+                        case 401:
+                            localStorage.clear()
+                            this.navigateTo('/')
+                            break
+
+                        default:
+                            this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                            this.navigateTo('/dashboard')
+                            break
+                    }
+                })
+                .finally(() => {
+                    setTimeout(() => NProgress.done(), 500)
                 })
             }
         },
@@ -225,6 +311,10 @@
         transition: background-color .3s ease-out;  
     }
 
+    div.creator form input[type=submit].delete {
+        background-color: #e74c3c;
+    }
+
     div.creator form input[type=submit]:disabled {
         background-color: #3498db !important;
         cursor: default;
@@ -232,5 +322,9 @@
 
     div.creator form input[type=submit]:hover {
         background-color: #27ae60;
+    }
+
+    div.creator form input[type=submit].delete:hover {
+        background-color: #c0392b;
     }
 </style>

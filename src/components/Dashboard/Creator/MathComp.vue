@@ -1,13 +1,5 @@
 <template>
     <div v-if="!preview" class="mathCompEdit">
-        <div class="bar">
-            <p>Funkcje</p>
-            <div class="list">
-                <i class="icon-down-open"></i>
-                <i class="icon-up-open"></i>
-                <i class="icon-cancel"></i>
-            </div>
-        </div>
         <form>
           Zakres a
           <input type="number" id="ax" v-model="ax" @change="updateChart()"><input type="number" id="ay" v-model="ay" @change="updateChart()"><input type="number" id="az" v-model="az" @change="updateChart()"><br>
@@ -261,37 +253,6 @@ export default {
 </script>
 
 <style scoped>
-    div.mathCompEdit div.bar {
-        width: 100%;
-        background-color: #2ecc71;
-        border-radius: 20px 20px 0 0;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        height: 30px;
-    }
-
-    div.mathCompEdit div.bar p {
-        color: #fff;
-        margin: 0 0 0 20px;
-        font-size: 18px;
-    }
-
-    div.mathCompEdit div.bar div.list {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        width: auto;
-        margin: 0 15px 0 0;
-    }
-
-    div.mathCompEdit div.bar div.list i {
-        color: #fff;
-        font-size: 18px;
-        margin: 0 5px 0 5px;
-    }
-
     form {
       padding: 20px;
     }
