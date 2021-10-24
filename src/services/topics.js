@@ -143,16 +143,14 @@ const updateTopic = (_id, topic) => {
 
 const deleteTopic = (topic) => {
 	const token = localStorage.getItem('token')
-	let body = topic
 
 	return new Promise((resolve, reject) => {
 		axios({
 			method: 'DELETE',
-			url: `${ config.serverAdress }/api/v1/topics`,
+			url: `${ config.serverAdress }/api/v1/topics/${ topic._id }`,
 			headers: {
                 'Authorization': `Bearer ${ token }`
-            },
-			data: body
+            }
 		})
 		.then((res) => {
 			switch(res.status) {
