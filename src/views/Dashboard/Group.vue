@@ -30,40 +30,47 @@
             navigateTo: function(subpage) {
                 if(this.$route.path != subpage) 
                 this.$router.push(subpage)
+            },
+            getData: function() {
+                NProgress.start()
+                NProgress.set(0.1)
+
+                getGroup(this.$route.params._id)
+                .then((res) => {
+                    this.group = res.data.group
+                })
+                .catch((err) => {
+                    switch(err.response.status) {
+                    case 404:
+                        this.navigateTo('/dashboard')
+                        break
+
+                    case 400:
+                        this.navigateTo('/dashboard')
+                        break
+
+                    case 401:
+                        localStorage.clear()
+                        this.navigateTo('/')
+                        break
+
+                    default:
+                        this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                        this.navigateTo('/')
+                        break
+                    }
+                })
+                .finally(() => {
+                    setTimeout(() => NProgress.done(), 500)
+                    this.load = true
+                })
             }
         },
         beforeMount: function() {
-            NProgress.start()
-            NProgress.set(0.1)
+            this.getData()
 
-            getGroup(this.$route.params._id)
-            .then((res) => {
-                this.group = res.data.group
-            })
-            .catch((err) => {
-                switch(err.response.status) {
-                case 404:
-                    this.navigateTo('/dashboard')
-                    break
-
-                case 400:
-                    this.navigateTo('/dashboard')
-                    break
-
-                case 401:
-                    localStorage.clear()
-                    this.navigateTo('/')
-                    break
-
-                default:
-                    this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
-                    this.navigateTo('/')
-                    break
-                }
-            })
-            .finally(() => {
-                setTimeout(() => NProgress.done(), 500)
-                this.load = true
+            this.$root.$on('groupProperties-group-update', () => {
+                this.getData()
             })
         }
     }

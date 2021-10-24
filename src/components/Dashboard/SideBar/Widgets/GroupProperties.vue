@@ -30,16 +30,76 @@
                             class="form"
                             ref="groupName"
                             placeholder="Wpisz nazwę klasy"
-                            type="text" />
+                            type="text"
+                            :class="incorrectGroupName ? 'error' : ''" />
 
+                        <input
+                            type="submit"
+                            value="Zmień nazwę klasy"
+                            v-on:click="updateClassName()">
+                    </form>
+                </div>
+            </transition>
+            <div 
+                class="bar"
+                v-on:click="prop[1].open = !prop[1].open">
+                <div class="title">
+                    <i
+                        class="icon-pencil-squared"
+                        :class="prop[1].open == true ? 'active' : ''"></i>
+                    <p>Zmień przedmiot klasy</p>
+                </div>
+                <i 
+                    class="icon-down-open"
+                    :class="prop[1].open == true ? 'opened' : ''"></i>
+            </div>
+            <transition
+                name="fade"
+                @enter="enter"
+                @after-enter="afterEnter"
+                @leave="leave">
+                <div 
+                    v-show="prop[1].open"
+                    class="content">
+                    <form action="javascript: void(0);">
                         <label for="subject">Nazwa przedmiotu:</label>
                         <input
                             id="subject"
                             class="form"
                             ref="groupSubject"
                             placeholder="Wpisz nazwę przedmiotu"
-                            type="text" />
+                            type="text"
+                            :class="incorrectGroupSubject ? 'error' : ''"/>
 
+                        <input
+                            type="submit"
+                            value="Zmień nazwę przedmiotu"
+                            v-on:click="updateClassSubject()">
+                    </form>
+                </div>
+            </transition>
+            <div 
+                class="bar"
+                v-on:click="prop[2].open = !prop[2].open">
+                <div class="title">
+                    <i
+                        class="icon-pencil-squared"
+                        :class="prop[2].open == true ? 'active' : ''"></i>
+                    <p>Zmień etykietę klasy</p>
+                </div>
+                <i 
+                    class="icon-down-open"
+                    :class="prop[2].open == true ? 'opened' : ''"></i>
+            </div>
+            <transition
+                name="fade"
+                @enter="enter"
+                @after-enter="afterEnter"
+                @leave="leave">
+                <div 
+                    v-show="prop[2].open"
+                    class="content">
+                    <form action="javascript: void(0);">
                         <label>Etykieta przedmiotu:</label>
 
                         <h1>{{ selectedEmoji }}</h1>
@@ -72,23 +132,23 @@
                             </emoji-picker>
                         <input
                             type="submit"
-                            value="Utwórz klasę"
-                            v-on:click="createClass()">
+                            value="Zmień etykietę klasy"
+                            v-on:click="updateClassEmoji()">
                     </form>
                 </div>
             </transition>
             <div 
                 class="bar"
-                v-on:click="prop[1].open = !prop[1].open">
+                v-on:click="prop[3].open = !prop[3].open">
                 <div class="title">
                     <i
                         class="icon-pencil-squared"
-                        :class="prop[1].open == true ? 'active' : ''"></i>
-                    <p>Zmień przedmiot klasy</p>
+                        :class="prop[3].open == true ? 'active' : ''"></i>
+                    <p>Usuń klasę</p>
                 </div>
                 <i 
                     class="icon-down-open"
-                    :class="prop[1].open == true ? 'opened' : ''"></i>
+                    :class="prop[3].open == true ? 'opened' : ''"></i>
             </div>
             <transition
                 name="fade"
@@ -96,33 +156,15 @@
                 @after-enter="afterEnter"
                 @leave="leave">
                 <div 
-                    v-show="prop[1].open"
+                    v-show="prop[3].open"
                     class="content">
-                    test
-                </div>
-            </transition>
-            <div 
-                class="bar"
-                v-on:click="prop[2].open = !prop[2].open">
-                <div class="title">
-                    <i
-                        class="icon-pencil-squared"
-                        :class="prop[2].open == true ? 'active' : ''"></i>
-                    <p>Zmień etykietę klasy</p>
-                </div>
-                <i 
-                    class="icon-down-open"
-                    :class="prop[2].open == true ? 'opened' : ''"></i>
-            </div>
-            <transition
-                name="fade"
-                @enter="enter"
-                @after-enter="afterEnter"
-                @leave="leave">
-                <div 
-                    v-show="prop[2].open"
-                    class="content">
-                    test
+                    <form action="javascript: void(0);">
+                        <label>Czy napewno chcesz usunąć klasę?</label>
+                        <input
+                            type="submit"
+                            value="Usuń"
+                            v-on:click="deleteClass()">
+                    </form>
                 </div>
             </transition>
         </div>
@@ -131,8 +173,9 @@
 
 <script>
     import EmojiPicker from 'vue-emoji-picker'
+    import NProgress from 'nprogress'
 
-    import { createGroup } from '@/services/groups.js'
+    import { updateGroup, getGroup, deleteGroup } from '@/services/groups.js'
 
     export default {
         name: 'GroupProperties',
@@ -151,6 +194,9 @@
                     {
                         open: false
                     },
+                    {
+                        open: false
+                    }
                 ],
                 selectedEmoji: '',
                 incorrectGroupName: false,
@@ -162,72 +208,143 @@
                 if(this.$route.path != subpage) 
                 this.$router.push(subpage)
             },
-            createClass: function() {
-                if(!this.checkForm()) {
-                    let groupName = this.$refs.groupName.value
-                    let groupSubject = this.$refs.groupSubject.value
+            updateClassName: function() {
+                if(!this.checkFormName()) {
+                    NProgress.start()
+                    NProgress.set(0.1)
 
-                    createGroup(groupName, groupSubject, this.selectedEmoji)
-                    .then((res) => {
-                        this.$refs.groupName.value = this.$refs.groupSubject.value = ''
+                    let groupName = this.$refs.groupName.value
+
+                    let body = {
+                        name: groupName
+                    }
+
+                    updateGroup(this.$route.params._id, body)
+                    .then(() => {
+                        this.$refs.groupName.value = ''
                         this.prop[0].open = false
 
-                        this.$toast("Pomyślnie utowrzono klasę '" + groupName + "'.")
-
-                        this.navigateTo('/dashboard/classes/' + res.data._id)
+                        this.$toast("Pomyślnie zmieniono nazwę klasy.")
+                        this.$root.$emit('groupProperties-group-update')
                     })
                     .catch(() => {
                         this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
                     })
+                    .finally(() => {
+                        setTimeout(() => NProgress.done(), 500)
+                    })
                 }
             },
-            checkForm: function() {
-                let groupName = this.$refs.groupName.value
-                let groupSubject = this.$refs.groupSubject.value
+            updateClassSubject: function() {
+                if(!this.checkFormSubject()) {
+                    NProgress.start()
+                    NProgress.set(0.1)
 
-                this.incorrectGroupName = this.incorrectGroupSubject = false
+                    let groupSubject = this.$refs.groupSubject.value
 
-                let err = false;
+                    let body = {
+                        subject: groupSubject
+                    }
 
-                if(groupName == "" && groupSubject == "" && this.selectedEmoji == "") {
-                    this.$toast.error("Proszę wypełnić pola.")
-                    this.incorrectGroupName = this.incorrectGroupSubject = true
+                    updateGroup(this.$route.params._id, body)
+                    .then(() => {
+                        this.$refs.groupSubject.value = ''
+                        this.prop[1].open = false
 
-                    return true
+                        this.$toast("Pomyślnie zmieniono przedmiot.")
+                        this.$root.$emit('groupProperties-group-update')
+                    })
+                    .catch(() => {
+                        this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                    })
+                    .finally(() => {
+                        setTimeout(() => NProgress.done(), 500)
+                    })
                 }
+            },
+            updateClassEmoji: function() {
+                if(!this.checkFormEmoji()) {
+                    NProgress.start()
+                    NProgress.set(0.1)
+
+                    let body = {
+                        emoji: this.selectedEmoji
+                    }
+
+                    updateGroup(this.$route.params._id, body)
+                    .then(() => {
+                        this.selectedEmoji = ''
+                        this.prop[2].open = false
+
+                        this.$toast("Pomyślnie zmieniono etykietę klasy.")
+                        this.$root.$emit('groupProperties-group-update')
+                    })
+                    .catch(() => {
+                        this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                    })
+                    .finally(() => {
+                        setTimeout(() => NProgress.done(), 500)
+                    })
+                }
+            },
+            deleteClass: function() {
+                NProgress.start()
+                NProgress.set(0.1)
+
+                deleteGroup(this.$route.params._id)
+                .then(() => {
+                    this.$toast("Pomyślnie usunięto klasę.")
+                    this.navigateTo('/dashboard/classes')
+                })
+                .catch((err) => {
+                    switch(err.response.status) {
+                        default:
+                            this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                            this.navigateTo('/')
+                            break
+                    }
+                })
+            },
+            checkFormName: function() {
+                let groupName = this.$refs.groupName.value
+
+                this.incorrectGroupName = false
 
                 if(groupName == "") {
                     this.$toast.error("Pole 'Nazwa klasy' nie może być puste.")
                     this.incorrectGroupName = true
 
-                    err = true
+                    return true
                 } else if(!this.validName(groupName)) {
                     this.$toast.error("Podana nazwa klasy zawiera niedozwolone znaki\r\nlub jest za krótka.")
                     this.incorrectGroupName = true
 
-                    err = true
-                }
+                    return true
+                } else return false
+            },
+            checkFormSubject: function() {
+                let groupSubject = this.$refs.groupSubject.value
+
+                this.incorrectGroupSubject = false
 
                 if(groupSubject == "") {
                     this.$toast.error("Pole 'Nazwa przedmiotu' nie może być puste.")
                     this.incorrectGroupSubject = true
 
-                    err = true
+                    return true
                 } else if(!this.validSubject(groupSubject)) {
                     this.$toast.error("Podana nazwa przedmiotu zawiera niedozwolone znaki\r\nlub jest za krótka.")
                     this.incorrectGroupSubject = true
 
-                    err = true
-                }
-
+                    return true
+                } else return false
+            },
+            checkFormEmoji: function() {
                 if(this.selectedEmoji == "") {
                     this.$toast.error("Etykieta przedmiotu nie została wybrana.")
-                
-                    err = true;
-                }
 
-                if(err)
-                    return true
+                    return true;
+                } else return false
             },
             validName: function(name) {
                 let re = /[0-9a-zA-Z\p{L}]{2,20}$/uy
@@ -400,6 +517,10 @@
 
     div.groupProp div.prop div.content form input.form:focus {
         border-bottom: 2px solid #2ecc71;
+    }
+
+    div.groupProp div.prop div.content form input.error {
+        border-bottom: 2px solid #e74c3c;
     }
 
     div.groupProp div.prop div.content form input.form
