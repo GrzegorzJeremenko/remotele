@@ -1,6 +1,8 @@
 <template>
   <div class="settings">
-    settings
+    <h1>
+      W trakcie prac...
+    </h1>
   </div>
 </template>
 
