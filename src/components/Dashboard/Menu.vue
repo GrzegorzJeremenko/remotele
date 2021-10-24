@@ -3,7 +3,7 @@
 	<img src="@/assets/logo.png">
 		<ol>
 			<li
-				v-for="(subpage, index) in subpages"
+				v-for="(subpage, index) in subpages[user.role]"
 				:class="$route.path == subpage.path ? 'routeActive' : ''"
 				v-on:click="navigateTo(subpage.path)"
 				:key="index">
@@ -23,34 +23,52 @@ export default {
 	},
 	data() {
 		return {
-			permission: 0,
-			subpages: [
-				{
-					name: 'Start',
-					icon: 'icon-home-outline',
-					path: '/dashboard',
-				},
-				{
-					name: 'Klasy',
-					icon: 'icon-users-outline',
-					path: '/dashboard/classes',
-				},
-				{
-					name: 'Tematy',
-					icon: 'icon-doc-text-1',
-					path: '/dashboard/topics',
-				},
-				{
-					name: 'Testy',
-					icon: 'icon-pencil',
-					path: '/dashboard/exams',
-				},
-				{
-					name: 'Ustawienia',
-					icon: 'icon-cog-outline',
-					path: '/dashboard/settings',
-				}
-			]
+			subpages: {
+				student: [
+					{
+						name: 'Start',
+						icon: 'icon-home-outline',
+						path: '/dashboard',
+					},
+					{
+						name: 'Przedmioty',
+						icon: 'icon-cubes',
+						path: '/dashboard/subjects',
+					},
+					{
+						name: 'Ustawienia',
+						icon: 'icon-cog-outline',
+						path: '/dashboard/settings',
+					}
+				],
+				teacher: [
+					{
+						name: 'Start',
+						icon: 'icon-home-outline',
+						path: '/dashboard',
+					},
+					{
+						name: 'Klasy',
+						icon: 'icon-users-outline',
+						path: '/dashboard/classes',
+					},
+					{
+						name: 'Tematy',
+						icon: 'icon-doc-text-1',
+						path: '/dashboard/topics',
+					},
+					{
+						name: 'Testy',
+						icon: 'icon-pencil',
+						path: '/dashboard/exams',
+					},
+					{
+						name: 'Ustawienia',
+						icon: 'icon-cog-outline',
+						path: '/dashboard/settings',
+					}
+				]
+			}
 		}
 	},
 	methods: {

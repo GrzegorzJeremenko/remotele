@@ -7,6 +7,7 @@
             <div id="information">
                 <h1>Klasa {{ group.name }}</h1>
                 <h2 :title="group.subject">{{ shortString(group.subject ,20) }}</h2>
+                <h2 style="margin: 5px 0 0 0;" :title="group.joinToken">Kod dostępu: {{ group.joinToken }}</h2>
             </div>
         </div>
         <div id="userList">

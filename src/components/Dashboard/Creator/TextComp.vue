@@ -209,4 +209,8 @@
         background-color: #2ecc71;
         color: #fff;
     }
+
+    div.textComp p {
+        white-space: pre;
+    }
 </style>

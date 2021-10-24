@@ -37,6 +37,11 @@ const routes = [
     ]
   },
   {
+    path: '/confirm-email/:token',
+    name: 'confirmEmail',
+    component: () => import('@/views/ConfirmEmail.vue')
+  },
+  {
     path: '/dashboard',
     component: Dashboard,
     children: [

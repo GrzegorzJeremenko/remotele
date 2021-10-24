@@ -144,7 +144,7 @@
                     <i
                         class="icon-pencil-squared"
                         :class="prop[3].open == true ? 'active' : ''"></i>
-                    <p>Usuń klasę</p>
+                    <p>Zmień opis klasy</p>
                 </div>
                 <i 
                     class="icon-down-open"
@@ -157,6 +157,44 @@
                 @leave="leave">
                 <div 
                     v-show="prop[3].open"
+                    class="content">
+                    <form action="javascript: void(0);">
+                        <label for="classDesc">Opis klasy:</label>
+                        <input
+                            id="classDesc"
+                            class="form"
+                            ref="groupDesc"
+                            placeholder="Wpisz opis klasy"
+                            type="text"
+                            :class="incorrectGroupDesc ? 'error' : ''" />
+
+                        <input
+                            type="submit"
+                            value="Zmień opis klasy"
+                            v-on:click="updateClassDesc()">
+                    </form>
+                </div>
+            </transition>
+            <div 
+                class="bar"
+                v-on:click="prop[4].open = !prop[4].open">
+                <div class="title">
+                    <i
+                        class="icon-pencil-squared"
+                        :class="prop[4].open == true ? 'active' : ''"></i>
+                    <p>Usuń klasę</p>
+                </div>
+                <i 
+                    class="icon-down-open"
+                    :class="prop[4].open == true ? 'opened' : ''"></i>
+            </div>
+            <transition
+                name="fade"
+                @enter="enter"
+                @after-enter="afterEnter"
+                @leave="leave">
+                <div 
+                    v-show="prop[4].open"
                     class="content">
                     <form action="javascript: void(0);">
                         <label>Czy napewno chcesz usunąć klasę?</label>
@@ -175,7 +213,7 @@
     import EmojiPicker from 'vue-emoji-picker'
     import NProgress from 'nprogress'
 
-    import { updateGroup, getGroup, deleteGroup } from '@/services/groups.js'
+    import { updateGroup, deleteGroup } from '@/services/groups.js'
 
     export default {
         name: 'GroupProperties',
@@ -196,11 +234,15 @@
                     },
                     {
                         open: false
+                    },
+                    {
+                        open: false
                     }
                 ],
                 selectedEmoji: '',
                 incorrectGroupName: false,
-                incorrectGroupSubject: false
+                incorrectGroupSubject: false,
+                incorrectGroupDesc: false,
             }
         },
         methods: {
@@ -225,6 +267,33 @@
                         this.prop[0].open = false
 
                         this.$toast("Pomyślnie zmieniono nazwę klasy.")
+                        this.$root.$emit('groupProperties-group-update')
+                    })
+                    .catch(() => {
+                        this.$toast.error("Ups... Coś poszło nie tak.\r\nSpróbuj ponownie później")
+                    })
+                    .finally(() => {
+                        setTimeout(() => NProgress.done(), 500)
+                    })
+                }
+            },
+            updateClassDesc: function() {
+                if(!this.checkFormDesc()) {
+                    NProgress.start()
+                    NProgress.set(0.1)
+
+                    let groupDesc = this.$refs.groupDesc.value
+
+                    let body = {
+                        description: groupDesc
+                    }
+
+                    updateGroup(this.$route.params._id, body)
+                    .then(() => {
+                        this.$refs.groupName.value = ''
+                        this.prop[3].open = false
+
+                        this.$toast("Pomyślnie zmieniono opis klasy.")
                         this.$root.$emit('groupProperties-group-update')
                     })
                     .catch(() => {
@@ -318,6 +387,18 @@
                 } else if(!this.validName(groupName)) {
                     this.$toast.error("Podana nazwa klasy zawiera niedozwolone znaki\r\nlub jest za krótka.")
                     this.incorrectGroupName = true
+
+                    return true
+                } else return false
+            },
+            checkFormDesc: function() {
+                let groupDesc = this.$refs.groupDesc.value
+
+                this.incorrectGroupName = false
+
+                if(groupDesc == "") {
+                    this.$toast.error("Pole 'Opis klasy' nie może być puste.")
+                    this.incorrectGroupDesc = true
 
                     return true
                 } else return false

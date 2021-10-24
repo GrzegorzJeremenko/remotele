@@ -125,4 +125,25 @@ const reset = (password, token) => {
 	})
 }
 
-export { login, register, recover, reset }
+const confirmEmail = (token) => {
+	return new Promise((resolve, reject) => {
+		axios({
+			method: 'POST',
+			url: `${ config.serverAdress }/api/v1/users/confirm-email/${ token }`,
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
+export { login, register, recover, reset, confirmEmail }
