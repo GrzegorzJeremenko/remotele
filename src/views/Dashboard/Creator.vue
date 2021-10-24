@@ -13,6 +13,7 @@
                 v-for="(element, index) in topic.components"
                 :style="{ backgroundColor: preview ? '#ffffff00' : '#fff' }"
                 :key="index">
+                <div>testw</div>
                 <TextComp
                     v-if="element.type === 'text'"
                     :data="element.data"

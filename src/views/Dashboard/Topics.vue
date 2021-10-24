@@ -4,8 +4,11 @@
   </div>
   <div v-else class="topics">
     <ul v-if="topics !== null">
-      <li>
-
+      <li
+        v-for="(topic, index) in topics"
+        v-on:click="navigateTo('/dashboard/creator/topic/' + topic._id)"
+        :key="index">
+        <p>{{ stringToUpper(topic.name) }}</p>
       </li>
     </ul>
     <div v-else id="emptyList">
@@ -32,6 +35,9 @@
       navigateTo: function(subpage) {
         if(this.$route.path != subpage) 
         this.$router.push(subpage)
+      },
+      stringToUpper: function(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
       }
     },
     beforeMount: function() {
@@ -117,5 +123,39 @@
     color: #666;
     margin: 15px 0 0 0;
     text-align: center;
+  }
+
+  div.topics ul {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 30px 0 30px 0;
+  }
+
+  div.topics ul li {
+    width: calc(90% - 60px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 10px 0 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 10px 15px 10px 15px;
+    transition: box-shadow .3s ease;
+  }
+
+  div.topics ul li:hover {
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
+    box-shadow: 0px 0px 5px 0px rgba(170, 170, 170, 1);
+  }
+
+  div.topics ul li p {
+    font-size: 16px;
+    padding: 5px 0 5px 0;
+    text-align: justify;
   }
 </style>
