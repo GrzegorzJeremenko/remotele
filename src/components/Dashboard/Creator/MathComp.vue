@@ -10,19 +10,25 @@
               <div
                 v-if="element.type === 'segment'"
                 >
-                Odcinek
-                <input type="text" :value="element.formula" v-bind:functionName="element.name" @change="onFunctionChange">
+                Odcinek <br>
+                <label>x<sub>1</sub> <input type="number" :value="element.segment.a.x" name="ax" v-bind:functionName="element.name" @change="onSegmentChange"></label>
+                <label>y<sub>1</sub> <input type="number" :value="element.segment.a.y" name="ay" v-bind:functionName="element.name" @change="onSegmentChange"></label>
+                <label>z<sub>1</sub> <input type="number" :value="element.segment.a.z" name="az" v-bind:functionName="element.name" @change="onSegmentChange"></label><br>
+                <label>x<sub>2</sub> <input type="number" :value="element.segment.b.x" name="bx" v-bind:functionName="element.name" @change="onSegmentChange"></label>
+                <label>y<sub>2</sub> <input type="number" :value="element.segment.b.y" name="by" v-bind:functionName="element.name" @change="onSegmentChange"></label>
+                <label>z<sub>2</sub> <input type="number" :value="element.segment.b.z" name="bz" v-bind:functionName="element.name" @change="onSegmentChange"></label>
+                <input type="color" v-bind:id="element.name">
               </div>
               <div
                 v-if="element.type === 'function'"
                 >
                 Funkcja
                 <input type="text" :value="element.formula" v-bind:functionName="element.name" @change="onFunctionChange">
-                <input type="color">
+                <input type="color" v-bind:id="element.name">
               </div>
             </li>
           </ul>
-          <input type="button" value="Dodaj nowy segment">
+          <input type="button" value="Dodaj nowy odcinek" @click="addNewSegment">
           <input type="button" value="Dodaj nową funkcję" @click="addNewFunction">
         </form>
         <div id="container">
@@ -72,13 +78,25 @@ export default {
     },
   },
   methods: {
+    addNewSegment: function () {
+      const name = Math.floor((Math.random() * 100000) + 1)
+      this.data.push({
+        name,
+        type: 'segment',
+        color: '0x000000',
+        segment: {
+          a: { x: 0, y: 0, z: 0 },
+          b: { x: 1, y: 2, z: 0 }
+        }
+      })
+    },
     addNewFunction: function () {
       const name = Math.floor((Math.random() * 100000) + 1)
       this.data.push({
         name,
         type: 'function',
         formula: '',
-        color: '0x0000ff'
+        color: '0x000000'
       })
     },
     updateChart: function() {
@@ -133,7 +151,11 @@ export default {
 
       for (let draw of data) {
         if (draw.type == 'segment') {
-          console.log('Segment')
+          let array = [
+            draw.segment.a.x, draw.segment.a.y, draw.segment.a.z,
+            draw.segment.b.x, draw.segment.b.y, draw.segment.b.z
+          ]
+          this.drawLineSegments(array, draw.name, draw.color)
         } else if (draw.type == 'function') {
           this.drawFunction(draw.formula, draw.name, draw.color)
         } else {
@@ -141,14 +163,36 @@ export default {
         }
       }
     },
+    onSegmentChange: function(e) {
+      let name = e.target.attributes.functionName.value || ''
+      let color = '0x' + document.getElementById(name).value.replace('#', '') || '0x00ff00'
+      let segmentLetter = e.target.name.substring(0, 1)
+      let axis = e.target.name.substring(1, 2)
+      
+      let segment = {}
+      this.data.map(obj => {
+        if (obj.name == name) {
+          obj.segment[segmentLetter][axis] = e.target.value
+          obj.color = color
+          segment = obj.segment
+          return obj
+        }
+      })
+      let array = [
+            segment.a.x, segment.a.y, segment.a.z,
+            segment.b.x, segment.b.y, segment.b.z
+          ]
+
+      this.drawLineSegments(array, name, color)
+    },
     onFunctionChange: function(e) {
       let name = e.target.attributes.functionName.value || ''
-      let color = '0x00ff00'
+      let color = '0x' + document.getElementById(name).value.replace('#', '') || '0x00ff00'
       
       this.data.map(obj => {
         if (obj.name == name) {
           obj.formula = e.target.value
-          color = obj.color
+          obj.color = color
           return obj
         }
       })      
@@ -183,18 +227,40 @@ export default {
     drawLines: function (array, name, color) {
       const geometry = new THREE.BufferGeometry()
       color = parseInt(color)
+      name = name.toString()
       const material = new THREE.MeshBasicMaterial( { color } );
       geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(array), 3))
 
-      let oldLine = this.scene.getObjectByName(name.toString())
+      let oldLine = this.scene.getObjectByName(name)
       if (oldLine) {
         this.scene.remove(oldLine)
 
         const line = new THREE.Line(geometry, material)
+        line.name = name
         this.scene.add(line)
       } else {
         const line = new THREE.Line(geometry, material)
-        line.name = name.toString()
+        line.name = name
+        this.scene.add(line)
+      }
+    },
+    drawLineSegments: function (array, name, color) {
+      const geometry = new THREE.BufferGeometry()
+      color = parseInt(color)
+      name = name.toString()
+      const material = new THREE.MeshBasicMaterial( { color } );
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(array), 3))
+
+      let oldLine = this.scene.getObjectByName(name)
+      if (oldLine) {
+        this.scene.remove(oldLine)
+
+        const line = new THREE.LineSegments(geometry, material)
+        line.name = name
+        this.scene.add(line)
+      } else {
+        const line = new THREE.LineSegments(geometry, material)
+        line.name = name
         this.scene.add(line)
       }
     },
@@ -285,5 +351,10 @@ export default {
         background: none;
         border-radius: 5px;
         border: 1px solid #ccc;
+    }
+
+    sub {
+      vertical-align: sub;
+      font-size: smaller;
     }
 </style>
