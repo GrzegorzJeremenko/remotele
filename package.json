@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "highlight.js": "^11.3.1",
     "nprogress": "^0.2.0",
+    "three": "^0.133.1",
     "vue": "^2.6.11",
     "vue-emoji-picker": "^1.0.3",
     "vue-highlight.js": "^4.0.1-beta",
