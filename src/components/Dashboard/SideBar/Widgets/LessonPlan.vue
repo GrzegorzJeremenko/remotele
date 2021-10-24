@@ -48,12 +48,12 @@
                     {
                         timeStart: '07:45',
                         timeEnd: '9:20',
-                        name: 'Robienie tego gówna'
+                        name: 'Klasa 3e'
                     },
                     {
                         timeStart: '09:25',
                         timeEnd: '10:10',
-                        name: 'Konrad Dobosz'
+                        name: 'Klasa 1a'
                     },
                 ],
                 hours: [],

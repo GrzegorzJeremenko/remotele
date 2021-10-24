@@ -90,6 +90,59 @@ const createGroup = (name, subject, emoji) => {
 	})
 }
 
+const updateGroup = (group_id, body) => {
+	const token = localStorage.getItem('token')
+
+	return new Promise((resolve, reject) => {
+		axios({
+			method: 'PATCH',
+			url: `${ config.serverAdress }/api/v1/groups/${ group_id }`,
+			headers: {
+                'Authorization': `Bearer ${ token }`
+            },
+            data: body
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
+const deleteGroup = (group_id) => {
+	const token = localStorage.getItem('token')
+
+	return new Promise((resolve, reject) => {
+		axios({
+			method: 'DELETE',
+			url: `${ config.serverAdress }/api/v1/groups/${ group_id }`,
+			headers: {
+                'Authorization': `Bearer ${ token }`
+            }
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
 const deleteTodo = (todo_id, group_id) => {
 	const token = localStorage.getItem('token')
 
@@ -148,4 +201,4 @@ const addTodo = (text, group_id) => {
 	})
 }
 
-export { getGroups, createGroup, getGroup, deleteTodo, addTodo }
+export { getGroups, createGroup, getGroup, updateGroup, deleteGroup, deleteTodo, addTodo }

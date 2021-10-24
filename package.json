@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.23.0",
     "core-js": "^3.6.5",
+    "date-holidays": "^3.11.0",
     "highlight.js": "^11.3.1",
     "nprogress": "^0.2.0",
     "three": "^0.133.1",
