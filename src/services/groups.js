@@ -90,6 +90,32 @@ const createGroup = (name, subject, emoji) => {
 	})
 }
 
+const joinGroup = (jointoken) => {
+	const token = localStorage.getItem('token')
+
+	return new Promise((resolve, reject) => {
+		axios({
+			method: 'POST',
+			url: `${ config.serverAdress }/api/v1/groups/join/${ jointoken }`,
+			headers: {
+                'Authorization': `Bearer ${ token }`
+            },
+		})
+		.then((res) => {
+			switch(res.status) {
+				case 200:
+					resolve(res)
+					break
+
+				default:
+					reject()
+					break
+			}
+		})
+		.catch((err) => reject(err))
+	})
+}
+
 const updateGroup = (group_id, body) => {
 	const token = localStorage.getItem('token')
 
@@ -201,4 +227,4 @@ const addTodo = (text, group_id) => {
 	})
 }
 
-export { getGroups, createGroup, getGroup, updateGroup, deleteGroup, deleteTodo, addTodo }
+export { getGroups, createGroup, getGroup, updateGroup, joinGroup, deleteGroup, deleteTodo, addTodo }

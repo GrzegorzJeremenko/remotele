@@ -33,13 +33,13 @@ const routes = [
         path: 'reset/:token',
         name: 'reset',
         component: () => import('@/views/Home/Reset.vue')
-      }
+      },
+      {
+        path: '/confirm-email/:token',
+        name: 'confirmEmail',
+        component: () => import('@/views/ConfirmEmail.vue')
+      },
     ]
-  },
-  {
-    path: '/confirm-email/:token',
-    name: 'confirmEmail',
-    component: () => import('@/views/ConfirmEmail.vue')
   },
   {
     path: '/dashboard',
@@ -54,6 +54,11 @@ const routes = [
         path: 'classes',
         name: 'Klasy',
         component: () => import('@/views/Dashboard/GroupList.vue')
+      },
+      {
+        path: 'subjects',
+        name: 'Przedmioty',
+        component: () => import('@/views/Dashboard/SubjectsList.vue')
       },
       {
         path: 'classes/:_id',
@@ -95,12 +100,12 @@ router.beforeEach((to, from, next) => {
   NProgress.set(0.1)
 
   if(localStorage.getItem('token') === null) {
-    if(to.name !== "login" && to.name !== "register" && to.name !== "forgot" && to.name !== "reset") 
+    if(to.name !== "login" && to.name !== "register" && to.name !== "forgot" && to.name !== "reset" && to.name !== "confirmEmail") 
       next({ path: '/' })
     else
       next()
   } else {
-    if(to.name === "login" || to.name === "register" || to.name === "forgot" || to.name === "reset") 
+    if(to.name === "login" || to.name === "register" || to.name === "forgot" || to.name === "reset" || to.name === "confirmEmail") 
       next({ path: '/dashboard' })
     else
       next()
